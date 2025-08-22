@@ -8,6 +8,7 @@
 #include "DistrhoUI.hpp"
 #include "ResizeHandle.hpp"
 #include "parameterNames.hpp"
+#include "../ImGuiFileDialog/ImGuiFileDialog.h"
 
 START_NAMESPACE_DISTRHO
 const char *parameterName[kParameterCount] ={
@@ -146,15 +147,35 @@ protected:
         {
             static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
             ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
-        for(int i=0;i<kParameterCount;i++){
-            start = 0.0f;
-            end=i?30.0f:2.0f;
-            if(i==kOctave){
-                            addSlider(i, -6, 6);
+            for(int i=0;i<kParameterCount;i++){
+                start = 0.0f;
+                end=i?30.0f:2.0f;
+                if(i==kOctave){
+                                addSlider(i, -6, 6);
+                }
+                else addSlider(i, start, end);
             }
-            else addSlider(i, start, end);
-        }
 
+            if (ImGui::Begin("##OpenDialogCommand")) {
+                if (ImGui::Button("Open File Dialog")) {
+                    IGFD::FileDialogConfig config;config.path = ".";
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
+                }
+            
+                ImGui::End();
+                
+                // display
+                if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog
+                    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                    // action
+                    }
+                    
+                    // close
+                    ImGuiFileDialog::Instance()->Close();
+                }
+            }
         }
         ImGui::End();
     }

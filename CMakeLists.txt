@@ -18,8 +18,11 @@ dpf_add_plugin(${NAME}
       src/Additive.cpp
   FILES_UI
       src/AdditiveUI.cpp
+      ImGuiFileDialog/ImGuiFileDialog.cpp
       dpf-widgets/opengl/DearImGui.cpp)
 
 target_include_directories(${NAME} PUBLIC src)
 target_include_directories(${NAME} PUBLIC dpf-widgets/generic)
 target_include_directories(${NAME} PUBLIC dpf-widgets/opengl)
+target_include_directories(${NAME} PUBLIC dpf-widgets/opengl/DearImGui)
+
