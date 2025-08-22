@@ -10,42 +10,59 @@
 #include "parameterNames.hpp"
 
 START_NAMESPACE_DISTRHO
-const char *parameterName[35] ={
-        "kGain",
-    "kInputWeight1",
-    "kInputWeight2",
-    "kInputWeight3",
-    "kInputWeight4",
-    "kInputWeight5",
-    "kInputWeight6",
-    "kInputWeight7",
-    "kInputWeight8",
-    "kInputBias1",
-    "kInputBias2",
-    "kInputBias3",
-    "kInputBias4",
-    "kInputBias5",
-    "kInputBias6",
-    "kInputBias7",
-    "kInputBias8",
-    "kOutputWeight1",
-    "kOutputWeight2",
-    "kOutputWeight3",
-    "kOutputWeight4",
-    "kOutputWeight5",
-    "kOutputWeight6",
-    "kOutputWeight7",
-    "kOutputWeight8",
-    "kOutputBias1",
-    "kOutputBias2",
-    "kOutputBias3",
-    "kOutputBias4",
-    "kOutputBias5",
-    "kOutputBias6",
-    "kOutputBias7",
-    "kOutputBias8",
-    "kPitch",
-    "kPitchRange"
+const char *parameterName[kParameterCount] ={
+"Gain",
+    "Volume24hz",
+    "Volume25hz",
+    "Volume26hz",
+    "Volume27hz",
+    "Volume28hz",
+    "Volume29hz",
+    "Volume30hz",
+    "Volume31hz",
+    "Volume32hz",
+    "Volume33hz",
+    "Volume34hz",
+    "Volume35hz",
+    "Volume36hz",
+    "Volume37hz",
+    "Volume38hz",
+    "Volume39hz",
+    "Volume40hz",
+    "Volume41hz",
+    "Volume42hz",
+    "Volume43hz",
+    "Volume44hz",
+    "Volume45hz",
+    "Volume46hz",
+    "Volume47hz",
+    "Phase24hz",
+    "Phase25hz",
+    "Phase26hz",
+    "Phase27hz",
+    "Phase28hz",
+    "Phase29hz",
+    "Phase30hz",
+    "Phase31hz",
+    "Phase32hz",
+    "Phase33hz",
+    "Phase34hz",
+    "Phase35hz",
+    "Phase36hz",
+    "Phase37hz",
+    "Phase38hz",
+    "Phase39hz",
+    "Phase40hz",
+    "Phase41hz",
+    "Phase42hz",
+    "Phase43hz",
+    "Phase44hz",
+    "Phase45hz",
+    "Phase46hz",
+    "Phase47hz",
+    "Octave",
+    "PitchCoarse",
+    "PitchFine"
 };
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -130,9 +147,12 @@ protected:
             static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
             ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
         for(int i=0;i<kParameterCount;i++){
-            start = i?-90.0f:-2.0f;
+            start = 0.0f;
             end=i?30.0f:2.0f;
-            addSlider(i, start, end);
+            if(i==kOctave){
+                            addSlider(i, -6, 6);
+            }
+            else addSlider(i, start, end);
         }
 
         }

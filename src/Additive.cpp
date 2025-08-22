@@ -2,86 +2,23 @@
 #include "pocketfft_hdronly.h"
 #include <algorithm>
 #include "parameterNames.hpp"
+#include <iostream>
 
 #define sampleRate 48000
 START_NAMESPACE_DISTRHO
 
 class Additive : public Plugin {
     public:
-        Additive() : Plugin(kParameterCount, 0, 0), gain(1.0) {position=frame=0; waveformLength=sampleRate;
+        Additive() : Plugin(kParameterCount, 0, 0), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
           //  for(int i=0;i<waveformLength;i++){
             //    waveform[i]=sin(2*M_PI  *i/800);
         //    }
-            stride_in[0]=stride_out[0]=sizeof(float);
+
 
 
         }
-  protected:
-      void activate() override {
-        if(PitchRange<1)PitchRange=1;
-        waveformLength=(int)sampleRate/PitchRange;
-        std::vector<float> data_out(waveformLength);
-        std::vector<float> data_in;
-                    shape_in[0]=waveformLength;
+    protected:
 
-                      for (int i=0;i<waveformLength;i++){
-              frequencies[i]=0.0f;
-              data_in.push_back(0.0f);
-          }
-          pocketfft::shape_t axes;
-          size_t superone=0;
-          axes.push_back(superone);
-
-          test=1;
-          // std::vector<std::complex<float>> data_out(sampleRate);
-          
-          // frequencies[800]=1;
-          float total =InputWeight1+InputWeight2+InputWeight3+InputWeight4+InputWeight5+InputWeight6+InputWeight7+InputWeight8+
-          OutputWeight1+OutputWeight2+OutputWeight3+OutputWeight4+OutputWeight5+OutputWeight6+OutputWeight7+OutputWeight8+
-          InputBias1+InputBias2+InputBias3+InputBias4+InputBias5+InputBias6+InputBias7+InputBias8;
-          if(total<1)total=1;
-          data_in[24]=InputWeight1/total;
-          data_in[25]=InputWeight2/total;
-          data_in[26]=InputWeight3/total;
-          data_in[27]=InputWeight4/total;
-          data_in[28]=InputWeight5/total;
-          data_in[29]=InputWeight6/total;
-          data_in[30]=InputWeight7/total;
-          data_in[31]=InputWeight8/total;
-          data_in[32]=InputBias1/total;
-          data_in[33]=InputBias2/total;
-          data_in[34]=InputBias3/total;
-          data_in[35]=InputBias4/total;
-          data_in[36]=InputBias5/total;
-          data_in[37]=InputBias6/total;
-          data_in[38]=InputBias7/total;
-          data_in[39]=InputBias8/total;          
-          data_in[40]=OutputWeight1/total;
-          data_in[41]=OutputWeight2/total;
-          data_in[42]=OutputWeight3/total;
-          data_in[43]=OutputWeight4/total;
-          data_in[44]=OutputWeight5/total;
-          data_in[45]=OutputWeight6/total;
-          data_in[46]=OutputWeight7/total;
-          data_in[47]=OutputWeight8/total;
-          pocketfft::r2r_fftpack(
-              shape_in,
-              stride_in,
-              stride_out,
-              axes,
-              false,
-              forward,
-                  data_in.data(),
-                                 data_out.data(),
-                                 fct
-          );
-          for(int i=0;i<waveformLength;i++){
-              waveform[i]=data_out[i];
-              //waveform[i]=0;
-          }
-    }
-      int position;
-      int frame;
 
         const char *getLabel() const override { return "Additive"; }
         const char *getDescription() const override {
@@ -103,509 +40,734 @@ class Additive : public Plugin {
                 parameter.name = "Gain";
                 parameter.symbol = "Gain";
                 parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
+                parameter.ranges.min = 0.0f;
                 parameter.ranges.max = 2.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
-            case kInputWeight1:
-                parameter.name = "Input Weight 1";
-                parameter.symbol = "InputWeight1";
+            case kVolume24hz:
+                parameter.name = "Volume 24hz";
+                parameter.symbol = "Volume24hz";
                 parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
+                parameter.ranges.min = 0.0f;
                 parameter.ranges.max = 2.0f;
                 parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume25hz:
+                parameter.name = "Volume 25hz";
+                parameter.symbol = "Volume25hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume26hz:
+                parameter.name = "Volume 26hz";
+                parameter.symbol = "Volume26z";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume27hz:
+                parameter.name = "Volume 27hz";
+                parameter.symbol = "Volume27hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume28hz:
+                parameter.name = "Volume 28hz";
+                parameter.symbol = "Volume28hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume29hz:
+                parameter.name = "Volume 29hz";
+                parameter.symbol = "Volume29hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume30hz:
+                parameter.name = "Volume 30hz";
+                parameter.symbol = "Volume30hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume31hz:
+                parameter.name = "Volume 31hz";
+                parameter.symbol = "Volume31hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume32hz:
+                parameter.name = "Volume 32hz";
+                parameter.symbol = "Volume32hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume33hz:
+                parameter.name = "Volume 33hz";
+                parameter.symbol = "Volume33hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume34hz:
+                parameter.name = "Volume 34hz";
+                parameter.symbol = "Volume34hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume35hz:
+                parameter.name = "Volume 35hz";
+                parameter.symbol = "Volume35hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume36hz:
+                parameter.name = "Volume 36hz";
+                parameter.symbol = "Volume36hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume37hz:
+                parameter.name = "Volume 37hz";
+                parameter.symbol = "Volume37hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume38hz:
+                parameter.name = "Volume 38hz";
+                parameter.symbol = "Volume38hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume39hz:
+                parameter.name = "Volume 39hz";
+                parameter.symbol = "Volume39hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume40hz:
+                parameter.name = "Volume 40hz";
+                parameter.symbol = "Volume40hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume41hz:
+                parameter.name = "Volume 41hz";
+                parameter.symbol = "Volume41hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume42hz:
+                parameter.name = "Volume 42hz";
+                parameter.symbol = "Volume42hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume43hz:
+                parameter.name = "Volume 43hz";
+                parameter.symbol = "Volume43hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume44hz:
+                parameter.name = "Volume 44hz";
+                parameter.symbol = "Volume44hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume45hz:
+                parameter.name = "Volume 45hz";
+                parameter.symbol = "Volume45hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume46hz:
+                parameter.name = "Volume 46hz";
+                parameter.symbol = "Volume46hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kVolume47hz:
+                parameter.name = "Volume 47hz";
+                parameter.symbol = "Volume47hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase24hz:
+                parameter.name = "Phase 24hz";
+                parameter.symbol = "Phase24hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase25hz:
+                parameter.name = "Phase 25hz";
+                parameter.symbol = "Phase25hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase26hz:
+                parameter.name = "Phase 26hz";
+                parameter.symbol = "Phase26z";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase27hz:
+                parameter.name = "Phase 27hz";
+                parameter.symbol = "Phase27hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase28hz:
+                parameter.name = "Phase 28hz";
+                parameter.symbol = "Phase28hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase29hz:
+                parameter.name = "Phase 29hz";
+                parameter.symbol = "Phase29hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase30hz:
+                parameter.name = "Phase 30hz";
+                parameter.symbol = "Phase30hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase31hz:
+                parameter.name = "Phase 31hz";
+                parameter.symbol = "Phase31hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase32hz:
+                parameter.name = "Phase 32hz";
+                parameter.symbol = "Phase32hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase33hz:
+                parameter.name = "Phase 33hz";
+                parameter.symbol = "Phase33hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase34hz:
+                parameter.name = "Phase 34hz";
+                parameter.symbol = "Phase34hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase35hz:
+                parameter.name = "Phase 35hz";
+                parameter.symbol = "Phase35hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase36hz:
+                parameter.name = "Phase 36hz";
+                parameter.symbol = "Phase36hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase37hz:
+                parameter.name = "Phase 37hz";
+                parameter.symbol = "Phase37hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase38hz:
+                parameter.name = "Phase 38hz";
+                parameter.symbol = "Phase38hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase39hz:
+                parameter.name = "Phase 39hz";
+                parameter.symbol = "Phase39hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase40hz:
+                parameter.name = "Phase 40hz";
+                parameter.symbol = "Phase40hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase41hz:
+                parameter.name = "Phase 41hz";
+                parameter.symbol = "Phase41hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase42hz:
+                parameter.name = "Phase 42hz";
+                parameter.symbol = "Phase42hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase43hz:
+                parameter.name = "Phase 43hz";
+                parameter.symbol = "Phase43hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase44hz:
+                parameter.name = "Phase 44hz";
+                parameter.symbol = "Phase44hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase45hz:
+                parameter.name = "Phase 45hz";
+                parameter.symbol = "Phase45hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase46hz:
+                parameter.name = "Phase 46hz";
+                parameter.symbol = "Phase46hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPhase47hz:
+                parameter.name = "Phase 47hz";
+                parameter.symbol = "Phase47hz";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max = 2.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kOctave:
+                parameter.name = "Octave";
+                parameter.symbol = "Octave";
+                parameter.ranges.def = 0;
+                parameter.ranges.min = -6;
+                parameter.ranges.max = 6;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPitchCoarse:
+                parameter.name = "Pitch Coarse";
+                parameter.symbol = "PitchCoarse";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = -48.0f;
+                parameter.ranges.max =48.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+            case kPitchFine:
+                parameter.name = "Pitch Fine";
+                parameter.symbol = "PitchFine";
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = -12.0f;
+                parameter.ranges.max =12.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
 
-                break;
-            case kInputWeight2:
-                parameter.name = "Input Weight 2";
-                parameter.symbol = "InputWeight2";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
 
-                break;
-            case kInputWeight3:
-                parameter.name = "Input Weight 3";
-                parameter.symbol = "InputWeight3";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-
-                break;
-            case kInputWeight4:
-                parameter.name = "Input Weight 4";
-                parameter.symbol = "InputWeight4";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputWeight5:
-                parameter.name = "Input Weight 5";
-                parameter.symbol = "InputWeight5";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputWeight6:
-                parameter.name = "Input Weight 6";
-                parameter.symbol = "InputWeight6";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputWeight7:
-                parameter.name = "Input Weight 7";
-                parameter.symbol = "InputWeight7";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputWeight8:
-                parameter.name = "Input Weight 8";
-                parameter.symbol = "InputWeight8";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias1:
-                parameter.name = "Input Bias 1";
-                parameter.symbol = "InputBias1";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias2:
-                parameter.name = "Input Bias 2";
-                parameter.symbol = "InputBias2";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias3:
-                parameter.name = "Input Bias 3";
-                parameter.symbol = "InputBias3";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias4:
-                parameter.name = "Input Bias 4";
-                parameter.symbol = "InputBias4";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias5:
-                parameter.name = "Input Bias 5";
-                parameter.symbol = "InputBias5";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias6:
-                parameter.name = "Input Bias 6";
-                parameter.symbol = "InputBias6";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias7:
-                parameter.name = "Input Bias 7";
-                parameter.symbol = "InputBias7";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kInputBias8:
-                parameter.name = "Input Bias 8";
-                parameter.symbol = "InputBias8";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight1:
-                parameter.name = "Output Weight 1";
-                parameter.symbol = "OutputWeight1";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight2:
-                parameter.name = "Output Weight 2";
-                parameter.symbol = "OutputWeight2";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight3:
-                parameter.name = "Output Weight 3";
-                parameter.symbol = "OutputWeight3";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight4:
-                parameter.name = "Output Weight 4";
-                parameter.symbol = "OutputWeight4";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight5:
-                parameter.name = "Output Weight 5";
-                parameter.symbol = "OutputWeight5";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight6:
-                parameter.name = "Output Weight 6";
-                parameter.symbol = "OutputWeight6";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight7:
-                parameter.name = "Output Weight 7";
-                parameter.symbol = "OutputWeight7";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputWeight8:
-                parameter.name = "Output Weight 8";
-                parameter.symbol = "OutputWeight8";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias1:
-                parameter.name = "Output Bias 1";
-                parameter.symbol = "OutputBias1";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias2:
-                parameter.name = "Output Bias 2";
-                parameter.symbol = "OutputBias2";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias3:
-                parameter.name = "Output Bias 3";
-                parameter.symbol = "OutputBias3";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias4:
-                parameter.name = "Output Bias 4";
-                parameter.symbol = "OutputBias4";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias5:
-                parameter.name = "Output Bias 5";
-                parameter.symbol = "OutputBias5";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias6:
-                parameter.name = "Output Bias 6";
-                parameter.symbol = "OutputBias6";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias7:
-                parameter.name = "Output Bias 7";
-                parameter.symbol = "OutputBias7";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kOutputBias8:
-                parameter.name = "Output Bias 8";
-                parameter.symbol = "OutputBias8";
-                parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -2.0f;
-                parameter.ranges.max = 2.0f;
-                parameter.hints=kParameterIsAutomatable;
-                break;
-            case kPitch:
-                parameter.name = "Pitch";
-                parameter.symbol = "Pitch";
-                parameter.ranges.def = 1.0f;
-                parameter.ranges.min = 0.0000001f;
-                parameter.hints=kParameterIsAutomatable;
-                parameter.ranges.max = 1.0f;
-
-                break;
-            case kPitchRange:
-                parameter.name = "PitchRange";
-                parameter.symbol = "PitchRange";
-                parameter.ranges.def = 1.0f;
-                parameter.ranges.min = 1.0f;
-                parameter.hints=kParameterIsAutomatable;
-                parameter.ranges.max = 40.0f;
-
-                break;
         }
     }
     float getParameterValue(uint32_t index) const override {
         switch (index) {
         case kGain:
-            return gain;
-        case kInputWeight1:
-            return InputWeight1;
-        case kInputWeight2:
-            return InputWeight2;
-        case kInputWeight3:
-            return InputWeight3;
-        case kInputWeight4:
-            return InputWeight4;
-        case kInputWeight5:
-            return InputWeight5;
-        case kInputWeight6:
-            return InputWeight6;
-        case kInputWeight7:
-            return InputWeight7;
-        case kInputWeight8:
-            return InputWeight8;
-        case kInputBias1:
-            return InputBias1;
-        case kInputBias2:
-            return InputBias2;
-        case kInputBias3:
-            return InputBias3;
-        case kInputBias4:
-            return InputBias4;
-        case kInputBias5:
-            return InputBias5;
-        case kInputBias6:
-            return InputBias6;
-        case kInputBias7:
-            return InputBias7;
-        case kInputBias8:
-            return InputBias8;
-        case kOutputWeight1:
-            return OutputWeight1;
-        case kOutputWeight2:
-            return OutputWeight2;
-        case kOutputWeight3:
-            return OutputWeight3;
-        case kOutputWeight4:
-            return OutputWeight4;
-        case kOutputWeight5:
-            return OutputWeight5;
-        case kOutputWeight6:
-            return OutputWeight6;
-        case kOutputWeight7:
-            return OutputWeight7;
-        case kOutputWeight8:
-            return OutputWeight8;
-        case kOutputBias1:
-            return OutputBias1;
-        case kOutputBias2:
-            return OutputBias2;
-        case kOutputBias3:
-            return OutputBias3;
-        case kOutputBias4:
-            return OutputBias4;
-        case kOutputBias5:
-            return OutputBias5;
-        case kOutputBias6:
-            return OutputBias6;
-        case kOutputBias7:
-            return OutputBias7;
-        case kOutputBias8:
-            return OutputBias8;
-        case kPitch:
-            return Pitch;
-        case kPitchRange:
-            return PitchRange;
-        default:
-            return 0.0;
+            return Gain;
+        case kVolume24hz:
+            return Volume24hz;
+        case kVolume25hz:
+            return Volume25hz;
+        case kVolume26hz:
+            return Volume26hz;
+        case kVolume27hz:
+            return Volume27hz;
+        case kVolume28hz:
+            return Volume28hz;
+        case kVolume29hz:
+            return Volume29hz;
+        case kVolume30hz:
+            return Volume30hz;
+        case kVolume31hz:
+            return Volume31hz;
+        case kVolume32hz:
+            return Volume32hz;
+        case kVolume33hz:
+            return Volume33hz;
+        case kVolume34hz:
+            return Volume34hz;
+        case kVolume35hz:
+            return Volume35hz;
+        case kVolume36hz:
+            return Volume36hz;
+        case kVolume37hz:
+            return Volume37hz;
+        case kVolume38hz:
+            return Volume38hz;
+        case kVolume39hz:
+            return Volume39hz;
+        case kVolume40hz:
+            return Volume40hz;
+        case kVolume41hz:
+            return Volume41hz;
+        case kVolume42hz:
+            return Volume42hz;
+        case kVolume43hz:
+            return Volume43hz;
+        case kVolume44hz:
+            return Volume44hz;
+        case kVolume45hz:
+            return Volume45hz;
+        case kVolume46hz:
+            return Volume46hz;
+        case kVolume47hz:
+            return Volume47hz;
+
+        case kPhase24hz:
+            return Phase24hz;
+        case kPhase25hz:
+            return Phase25hz;
+        case kPhase26hz:
+            return Phase26hz;
+        case kPhase27hz:
+            return Phase27hz;
+        case kPhase28hz:
+            return Phase28hz;
+        case kPhase29hz:
+            return Phase29hz;
+        case kPhase30hz:
+            return Phase30hz;
+        case kPhase31hz:
+            return Phase31hz;
+        case kPhase32hz:
+            return Phase32hz;
+        case kPhase33hz:
+            return Phase33hz;
+        case kPhase34hz:
+            return Phase34hz;
+        case kPhase35hz:
+            return Phase35hz;
+        case kPhase36hz:
+            return Phase36hz;
+        case kPhase37hz:
+            return Phase37hz;
+        case kPhase38hz:
+            return Phase38hz;
+        case kPhase39hz:
+            return Phase39hz;
+        case kPhase40hz:
+            return Phase40hz;
+        case kPhase41hz:
+            return Phase41hz;
+        case kPhase42hz:
+            return Phase42hz;
+        case kPhase43hz:
+            return Phase43hz;
+        case kPhase44hz:
+            return Phase44hz;
+        case kPhase45hz:
+            return Phase45hz;
+        case kPhase46hz:
+            return Phase46hz;
+        case kPhase47hz:
+            return Phase47hz;
+
+
+        case kOctave:
+            return Octave;
+        case kPitchCoarse:
+            return PitchCoarse;
+        case kPitchFine:
+            return PitchFine;
         }
     }
 
     void setParameterValue(uint32_t index, float value) override {
         switch (index) {
-        case kGain:
-            gain = value;
-            break;
-        case kInputWeight1:
-            InputWeight1=value;
-                        break;
-        case kInputWeight2:
-            InputWeight2=value;
-                        break;
-        case kInputWeight3:
-            InputWeight3=value;
-                        break;
-        case kInputWeight4:
-            InputWeight4=value;
-                        break;
-        case kInputWeight5:
-            InputWeight5=value;
-                        break;
-        case kInputWeight6:
-            InputWeight6=value;
-                        break;
-        case kInputWeight7:
-            InputWeight7=value;
-                        break;
-        case kInputWeight8:
-            InputWeight8=value;
-                        break;
-        case kInputBias1:
-            InputBias1=value;
-                        break;
-        case kInputBias2:
-            InputBias2=value;
-                        break;
-        case kInputBias3:
-            InputBias3=value;
-                        break;
-        case kInputBias4:
-            InputBias4=value;
-                        break;
-        case kInputBias5:
-            InputBias5=value;
-                        break;
-        case kInputBias6:
-            InputBias6=value;
-                        break;
-        case kInputBias7:
-            InputBias7=value;
-                        break;
-        case kInputBias8:
-            InputBias8=value;
-                        break;
-        case kOutputWeight1:
-            OutputWeight1=value;
-                        break;
-        case kOutputWeight2:
-            OutputWeight2=value;
-                        break;
-        case kOutputWeight3:
-            OutputWeight3=value;
-                        break;
-        case kOutputWeight4:
-            OutputWeight4=value;
-                        break;
-        case kOutputWeight5:
-            OutputWeight5=value;
-                        break;
-        case kOutputWeight6:
-            OutputWeight6=value;
-                        break;
-        case kOutputWeight7:
-            OutputWeight7=value;
-                        break;
-        case kOutputWeight8:
-            OutputWeight8=value;
-                        break;
-        case kOutputBias1:
-            OutputBias1=value;
-                        break;
-        case kOutputBias2:
-            OutputBias2=value;
-                        break;
-        case kOutputBias3:
-            OutputBias3=value;
-                        break;
-        case kOutputBias4:
-            OutputBias4=value;
-                        break;
-
-
-        case kOutputBias5:
-            OutputBias5=value;
-                        break;
-        case kOutputBias6:
-            OutputBias6=value;
-                        break;
-        case kOutputBias7:
-            OutputBias7=value;
-                        break;
-        case kOutputBias8:
-            OutputBias8=value;
-            break;
-        case kPitch:
-            Pitch=value;
-            break;
-        case kPitchRange:
-            PitchRange=value;
-            break;
+         case kGain:
+            Gain=value;break;
+        case kVolume24hz:
+             Volume24hz=value;break;
+        case kVolume25hz:
+             Volume25hz=value;break;
+        case kVolume26hz:
+             Volume26hz=value;break;
+        case kVolume27hz:
+             Volume27hz=value;break;
+        case kVolume28hz:
+             Volume28hz=value;break;
+        case kVolume29hz:
+             Volume29hz=value;break;
+        case kVolume30hz:
+             Volume30hz=value;break;
+        case kVolume31hz:
+             Volume31hz=value;break;
+        case kVolume32hz:
+             Volume32hz=value;break;
+        case kVolume33hz:
+             Volume33hz=value;break;
+        case kVolume34hz:
+             Volume34hz=value;break;
+        case kVolume35hz:
+             Volume35hz=value;break;
+        case kVolume36hz:
+             Volume36hz=value;break;
+        case kVolume37hz:
+             Volume37hz=value;break;
+        case kVolume38hz:
+             Volume38hz=value;break;
+        case kVolume39hz:
+             Volume39hz=value;break;
+        case kVolume40hz:
+             Volume40hz=value;break;
+        case kVolume41hz:
+             Volume41hz=value;break;
+        case kVolume42hz:
+             Volume42hz=value;break;
+        case kVolume43hz:
+             Volume43hz=value;break;
+        case kVolume44hz:
+             Volume44hz=value;break;
+        case kVolume45hz:
+             Volume45hz=value;break;
+        case kVolume46hz:
+             Volume46hz=value;break;
+        case kVolume47hz:
+             Volume47hz=value;break;
+        case kPhase24hz:
+             Phase24hz=value;break;
+        case kPhase25hz:
+             Phase25hz=value;break;
+        case kPhase26hz:
+             Phase26hz=value;break;
+        case kPhase27hz:
+             Phase27hz=value;break;
+        case kPhase28hz:
+             Phase28hz=value;break;
+        case kPhase29hz:
+             Phase29hz=value;break;
+        case kPhase30hz:
+             Phase30hz=value;break;
+        case kPhase31hz:
+             Phase31hz=value;break;
+        case kPhase32hz:
+             Phase32hz=value;break;
+        case kPhase33hz:
+             Phase33hz=value;break;
+        case kPhase34hz:
+             Phase34hz=value;break;
+        case kPhase35hz:
+             Phase35hz=value;break;
+        case kPhase36hz:
+             Phase36hz=value;break;
+        case kPhase37hz:
+             Phase37hz=value;break;
+        case kPhase38hz:
+             Phase38hz=value;break;
+        case kPhase39hz:
+             Phase39hz=value;break;
+        case kPhase40hz:
+             Phase40hz=value;break;
+        case kPhase41hz:
+             Phase41hz=value;break;
+        case kPhase42hz:
+             Phase42hz=value;break;
+        case kPhase43hz:
+             Phase43hz=value;break;
+        case kPhase44hz:
+             Phase44hz=value;break;
+        case kPhase45hz:
+             Phase45hz=value;break;
+        case kPhase46hz:
+             Phase46hz=value;break;
+        case kPhase47hz:
+             Phase47hz=value;break;
+   
+        case kOctave:
+             Octave=(int)value;break;
+        case kPitchCoarse:
+            PitchCoarse=value;break;
+        case kPitchFine:
+            PitchFine=value;break;
         }
-        activate();
+        calculate();
     }
     float clamp(float a){
         return std::max<float>(-1.0, std::min<float>(1.0,a));
     }
+        float getPitch(){
+            return pow(2,Octave+PitchCoarse/12+PitchFine/12);
+        }
+        void activate() override {
+            calculate();
+        }
 
-    float calculate(float i){
-        float n1, n2, n3, n4, n5, n6, n7, n8, result;
-        n1=clamp(InputWeight1*sin(position/64)*i+InputBias1);
-        n2=clamp(InputWeight2*sin(position/64)+InputBias2);
-        n3=clamp(InputWeight3*sin(position/64)+InputBias3);
-        n4=clamp(InputWeight4*sin(position/64)+InputBias4);
-        n5=clamp(InputWeight5*sin(position/64)+InputBias5);
-        n6=clamp(InputWeight6*sin(position/64)+InputBias6);
-        n7=clamp(InputWeight7*sin(position/64)+InputBias7);
-        n8=clamp(InputWeight8*sin(position/64)+InputBias8);
-        result=clamp(n1*OutputWeight1+
-        n2*OutputWeight2+
-        n3*OutputWeight3+
-        n4*OutputWeight4+
-        n5*OutputWeight5+
-        n6*OutputWeight6+
-        n7*OutputWeight7+
-        n8*OutputWeight8+
-        OutputBias1
+    void calculate(){
+        waveformLength=(int)(sampleRate/getPitch());
+        
+        std::cout<<waveformLength;
+        std::vector<std::complex<float>> data_out(waveformLength);
+        std::vector<std::complex<float>> data_in(waveformLength);
+                pocketfft::shape_t shape_in{1};                                              // dimensions of the input shape
+        pocketfft::stride_t stride_in{1};                    // must have the size of each element. Must have size() equal to shape_in.size()
+        pocketfft::stride_t stride_out{1}; // must have the size of each element. Must have size() equal to shape_in.size()
+                    stride_in[0]=stride_out[0]=sizeof(std::complex<float>);
+      //  pocketfft::shape_t axes{1};                                                  // 0 to shape.size()-1 inclusive
+        bool forward{ pocketfft::BACKWARD };                                            // FORWARD or BACKWARD
+                                                                // input data (reals)
+                              // output data (FFT(input))
+        float fct{ 1.0f };    // scaling factor
+        shape_in[0]=waveformLength;
+          pocketfft::shape_t axes;
 
-        );
-        return result;
+          axes.push_back(0);
+         for (int i=0;i<waveformLength;i++){
+               data_in[i]=std::polar<float>(0.0f,0.0f);
+           }
+
+
+
+        //   // std::vector<std::complex<float>> data_out(sampleRate);
+          
+        //   // frequencies[800]=1;
+           float total =Volume24hz+Volume25hz+Volume26hz+Volume27hz+Volume28hz+Volume29hz+Volume30hz+Volume31hz+Volume32hz+Volume33hz+
+        Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
+        Volume44hz+Volume45hz+Volume46hz+Volume47hz;
+        if(total<1)total=1;
+           data_in[24]=std::polar<float>(Volume24hz/total, Phase24hz);
+          data_in[25]=std::polar<float>(Volume25hz/total, Phase25hz);
+          data_in[26]=std::polar<float>(Volume26hz/total, Phase26hz);
+          data_in[27]=std::polar<float>(Volume27hz/total, Phase27hz);
+          data_in[28]=std::polar<float>(Volume28hz/total, Phase28hz);
+          data_in[29]=std::polar<float>(Volume29hz/total, Phase29hz);
+          data_in[30]=std::polar<float>(Volume30hz/total, Phase30hz);
+          data_in[31]=std::polar<float>(Volume31hz/total, Phase31hz);
+          data_in[32]=std::polar<float>(Volume32hz/total, Phase32hz);
+          data_in[33]=std::polar<float>(Volume33hz/total, Phase33hz);
+          data_in[34]=std::polar<float>(Volume34hz/total, Phase34hz);
+          data_in[35]=std::polar<float>(Volume35hz/total, Phase35hz);
+          data_in[36]=std::polar<float>(Volume36hz/total, Phase36hz);
+          data_in[37]=std::polar<float>(Volume37hz/total, Phase37hz);
+          data_in[38]=std::polar<float>(Volume38hz/total, Phase38hz);
+          data_in[39]=std::polar<float>(Volume39hz/total, Phase39hz);
+          data_in[40]=std::polar<float>(Volume40hz/total, Phase40hz);
+          data_in[41]=std::polar<float>(Volume41hz/total, Phase41hz);
+          data_in[42]=std::polar<float>(Volume42hz/total, Phase42hz);
+          data_in[43]=std::polar<float>(Volume43hz/total, Phase43hz);
+          data_in[44]=std::polar<float>(Volume44hz/total, Phase44hz);
+          data_in[45]=std::polar<float>(Volume45hz/total, Phase45hz);
+          data_in[46]=std::polar<float>(Volume46hz/total, Phase46hz);
+          data_in[47]=std::polar<float>(Volume47hz/total, Phase47hz);
+        for (int i=24;i<48;i++){
+              data_in[waveformLength-i]=data_in[i];
+          }
+          std::cout<<"foo";
+          pocketfft::c2c(
+              shape_in,
+              stride_in,
+              stride_out,
+              axes,
+              forward,
+                  data_in.data(),
+                                 data_out.data(),
+                                 fct
+          );
+          std::cout<<"bar";
+          for(int i=0;i<waveformLength;i++){
+              waveform[i]=data_out[i].real();
+              //waveform[i]=0;
+          }
     }
        void run(const float **inputs, float **outputs, uint32_t frames) override {
         const float *const in = inputs[0];
         float *const out = outputs[0];
-        out[0]=(fmod(pow(0.5,0.5)+position*M_PI,2)-1)*gain;
+        //out[0]=(fmod(pow(0.5,0.5)+position*M_PI,2)-1)*gain;
         // for(int i=0;i<waveformLength;i++){
         //     waveform[i]=sin(2*M_PI  *i*PitchRange/800);
         // }
@@ -616,7 +778,7 @@ class Additive : public Plugin {
             //out[i]=rand()*gain/100000000;
             //out[i]= calculate(in[i])/2;
 
-            out[i]=waveform[position]*gain;
+            out[i]=waveform[position]*Gain;
 
             position+=1;
           while(position>=waveformLength){
@@ -632,53 +794,64 @@ class Additive : public Plugin {
         frame++;
     }
     private:
-        float gain,
-        InputWeight1,
-        InputWeight2,
-        InputWeight3,
-        InputWeight4,
-        InputWeight5,
-        InputWeight6,
-        InputWeight7,
-        InputWeight8,
-        InputBias1,
-        InputBias2,
-        InputBias3,
-        InputBias4,
-        InputBias5,
-        InputBias6,
-        InputBias7,
-        InputBias8,
-        OutputWeight1,
-        OutputWeight2,
-        OutputWeight3,
-        OutputWeight4,
-        OutputWeight5,
-        OutputWeight6,
-        OutputWeight7,
-        OutputWeight8,
-        OutputBias1,
-        OutputBias2,
-        OutputBias3,
-        OutputBias4,
-        OutputBias5,
-        OutputBias6,
-        OutputBias7,
-        OutputBias8,
-        Pitch,
-        PitchRange;
+        float Gain,
+        Volume24hz,
+    Volume25hz,
+    Volume26hz,
+    Volume27hz,
+    Volume28hz,
+    Volume29hz,
+    Volume30hz,
+    Volume31hz,
+    Volume32hz,
+    Volume33hz,
+    Volume34hz,
+    Volume35hz,
+    Volume36hz,
+    Volume37hz,
+    Volume38hz,
+    Volume39hz,
+    Volume40hz,
+    Volume41hz,
+    Volume42hz,
+    Volume43hz,
+    Volume44hz,
+    Volume45hz,
+    Volume46hz,
+    Volume47hz,
+    Phase24hz,
+    Phase25hz,
+    Phase26hz,
+    Phase27hz,
+    Phase28hz,
+    Phase29hz,
+    Phase30hz,
+    Phase31hz,
+    Phase32hz,
+    Phase33hz,
+    Phase34hz,
+    Phase35hz,
+    Phase36hz,
+    Phase37hz,
+    Phase38hz,
+    Phase39hz,
+    Phase40hz,
+    Phase41hz,
+    Phase42hz,
+    Phase43hz,
+    Phase44hz,
+    Phase45hz,
+    Phase46hz,
+    Phase47hz,
+    PitchCoarse,
+    PitchFine;
+    int Octave;
         float waveform[sampleRate];
-        int waveformLength, test;
+        int waveformLength;
+                int position;
+        int frame;
 
-        pocketfft::shape_t shape_in{1};                                              // dimensions of the input shape
-        pocketfft::stride_t stride_in{1};                    // must have the size of each element. Must have size() equal to shape_in.size()
-        pocketfft::stride_t stride_out{1}; // must have the size of each element. Must have size() equal to shape_in.size()
-      //  pocketfft::shape_t axes{1};                                                  // 0 to shape.size()-1 inclusive
-        bool forward{ pocketfft::BACKWARD };                                            // FORWARD or BACKWARD
-                                                                // input data (reals)
-                              // output data (FFT(input))
-        float fct{ 1.0f };    // scaling factor
-        float frequencies[48000];
+
 
         DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Additive);
 };
