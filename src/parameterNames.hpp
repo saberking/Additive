@@ -1,0 +1,6 @@
+#include<string>
+START_NAMESPACE_DISTRHO
+
+
+
+END_NAMESPACE_DISTRHO
