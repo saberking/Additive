@@ -162,6 +162,8 @@ enum Parameters {
     kPitchCoarse,
     kPitchFine,
     kSampleOffset,
+    kSampleGain,
+    kDrive,
     kParameterCount
 };
 

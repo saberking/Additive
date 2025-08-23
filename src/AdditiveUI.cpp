@@ -65,7 +65,9 @@ const char *parameterName[kParameterCount] ={
     "Octave",
     "PitchCoarse",
     "PitchFine",
-    "SampleOffset"
+    "SampleOffset",
+    "SampleGain",
+    "Drive"
 };
 // --------------------------------------------------------------------------------------------------------------------
 

@@ -463,6 +463,22 @@ class Additive : public Plugin {
                 parameter.ranges.max = 1000;
                 parameter.hints=kParameterIsAutomatable;
                 break;
+            case kSampleGain:
+                parameter.name = "Sample Gain";
+                parameter.symbol = "SampleGain";
+                parameter.ranges.def = 1.0f;
+                parameter.ranges.min = 0.0;
+                parameter.ranges.max =12.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
+                        case kDrive:
+                parameter.name = "Drive";
+                parameter.symbol = "Drive";
+                parameter.ranges.def = 100.0f;
+                parameter.ranges.min = 1.0;
+                parameter.ranges.max =200.0f;
+                parameter.hints=kParameterIsAutomatable;
+                break;
 
         }
     }
@@ -577,7 +593,12 @@ class Additive : public Plugin {
             return PitchFine;
         case kSampleOffset:
             return SampleOffset;
+        case kSampleGain:
+            return SampleGain;
+                    case kDrive:
+            return Drive;
         }
+
     }
 
     void setParameterValue(uint32_t index, float value) override {
@@ -690,6 +711,10 @@ class Additive : public Plugin {
             PitchFine=value;break;
         case kSampleOffset:
             SampleOffset=(int)value;break;
+        case kSampleGain:
+            SampleGain=value;break;
+                    case kDrive:
+            Drive=value; break;
 
         }
         calculate();
@@ -778,8 +803,9 @@ sampleLength = audioFile.getNumSamplesPerChannel();
             data_in[46]=std::polar<float>(Volume46hz, Phase46hz);
             data_in[47]=std::polar<float>(Volume47hz, Phase47hz);
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
+                data_in[i]/=100;//weirdness
                 if(audioFile.samples[0][i-SampleOffset]+1>0)
-                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset]+1)/2,audioFile.samples[1][i-SampleOffset]*M_PI);
+                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset]+1)*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
         }
         for (int i=1;i<waveformLength/2-1;i++){
          
@@ -793,7 +819,7 @@ sampleLength = audioFile.getNumSamplesPerChannel();
           float recip=1/total;
                     for (int i=1;i<waveformLength;i++){
          //weird effect
-            data_in[i]*=recip*100;
+            data_in[i]*=recip*Drive;//100
           }
 
           std::cout<<"foo";
@@ -895,7 +921,9 @@ sampleLength = audioFile.getNumSamplesPerChannel();
     Phase46hz,
     Phase47hz,
     PitchCoarse,
-    PitchFine;
+    PitchFine,
+    SampleGain,
+    Drive;
     int Octave;
         float waveform[maxWaveformLength];
         int waveformLength,safeWaveformLength;
