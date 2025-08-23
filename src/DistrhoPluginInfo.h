@@ -14,7 +14,9 @@
 
 #define DISTRHO_PLUGIN_WANT_PROGRAMS 0
 
-#define DISTRHO_PLUGIN_WANT_STATE 0
+#define DISTRHO_PLUGIN_WANT_STATE 1
+
+#define DISTRHO_PLUGIN_WANT_FULL_STATE 1
 
 #define DISTRHO_PLUGIN_WANT_TIMEPOS 1
 
@@ -159,6 +161,7 @@ enum Parameters {
     kOctave,
     kPitchCoarse,
     kPitchFine,
+    kSampleOffset,
     kParameterCount
 };
 

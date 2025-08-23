@@ -9,6 +9,7 @@
 #include "ResizeHandle.hpp"
 #include "parameterNames.hpp"
 #include "../ImGuiFileDialog/ImGuiFileDialog.h"
+#include <iostream>
 
 START_NAMESPACE_DISTRHO
 const char *parameterName[kParameterCount] ={
@@ -63,7 +64,8 @@ const char *parameterName[kParameterCount] ={
     "Phase47hz",
     "Octave",
     "PitchCoarse",
-    "PitchFine"
+    "PitchFine",
+    "SampleOffset"
 };
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -133,6 +135,7 @@ protected:
    /**
       ImGui specific onDisplay function.
     */
+    void stateChanged(const char* key, const char * value){}
     void onImGuiDisplay() override
     {
         float start, end;
@@ -156,30 +159,45 @@ protected:
                 else addSlider(i, start, end);
             }
 
-            if (ImGui::Begin("##OpenDialogCommand")) {
+            //if (ImGui::Begin("##OpenDialogCommand")) {
                 if (ImGui::Button("Open File Dialog")) {
                     IGFD::FileDialogConfig config;config.path = ".";
-                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".wav", config);
                 }
             
-                ImGui::End();
-                
+                //ImGui::End();
+               // std::cout<<"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
                 // display
                 if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog
                     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                    std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                    fFilePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                    fFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    //std::cout<<"\n\n\n\n"<<"*******************8";
+                                        // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+                                        // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+                                        // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+                                        // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+                                        // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+                       std::cout<<fFilePath;
+                    //   std::cout<<filePath;
+                    //   std::cout<<filePath;
+                      std::cout<<"\n\n";
+                        std::cout<<fFilePathName; 
+                                              std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fFilePathName<<"\n\n";    
+                                              setState( "SampleFilePath", fFilePathName.c_str());    
                     // action
                     }
                     
                     // close
                     ImGuiFileDialog::Instance()->Close();
                 }
-            }
+          //  }
         }
         ImGui::End();
     }
-
+    private:
+                            std::string fFilePathName;
+                    std::string fFilePath;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AdditiveUI)
 };
 

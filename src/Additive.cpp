@@ -3,13 +3,16 @@
 #include <algorithm>
 #include "parameterNames.hpp"
 #include <iostream>
+#include "AudioFile.h"
 
 #define sampleRate 48000
+#define maxWaveformLength 3072000
 START_NAMESPACE_DISTRHO
 
 class Additive : public Plugin {
     public:
         Additive() : Plugin(kParameterCount, 0, 0), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
+            sampleLength=0;
           //  for(int i=0;i<waveformLength;i++){
             //    waveform[i]=sin(2*M_PI  *i/800);
         //    }
@@ -452,7 +455,14 @@ class Additive : public Plugin {
                 parameter.ranges.max =12.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
-
+            case kSampleOffset:
+                parameter.name = "Sanple Offset";
+                parameter.symbol = "SampleOffset";
+                parameter.ranges.def = 0;
+                parameter.ranges.min = 0;
+                parameter.ranges.max = 1000;
+                parameter.hints=kParameterIsAutomatable;
+                break;
 
         }
     }
@@ -565,6 +575,8 @@ class Additive : public Plugin {
             return PitchCoarse;
         case kPitchFine:
             return PitchFine;
+        case kSampleOffset:
+            return SampleOffset;
         }
     }
 
@@ -668,6 +680,7 @@ class Additive : public Plugin {
              Phase46hz=value;break;
         case kPhase47hz:
              Phase47hz=value;break;
+        
    
         case kOctave:
              Octave=(int)value;break;
@@ -675,8 +688,26 @@ class Additive : public Plugin {
             PitchCoarse=value;break;
         case kPitchFine:
             PitchFine=value;break;
+        case kSampleOffset:
+            SampleOffset=(int)value;break;
+
         }
         calculate();
+    }
+    void setState(const char *key, const char *value){
+        SampleFilePath=value;
+       std::cout<<"Sample loaded: "<<value<<"\n\n";
+       audioFile.load (value);
+       int numChannels = audioFile.getNumChannels();
+       if( numChannels==2){
+sampleLength = audioFile.getNumSamplesPerChannel();
+
+       }
+       else{
+        sampleLength=0;
+       }
+       
+       calculate();
     }
     float clamp(float a){
         return std::max<float>(-1.0, std::min<float>(1.0,a));
@@ -707,6 +738,8 @@ class Additive : public Plugin {
           pocketfft::shape_t axes;
 
           axes.push_back(0);
+
+          float total=0;
          for (int i=0;i<waveformLength;i++){
                data_in[i]=std::polar<float>(0.0f,0.0f);
            }
@@ -716,37 +749,53 @@ class Additive : public Plugin {
         //   // std::vector<std::complex<float>> data_out(sampleRate);
           
         //   // frequencies[800]=1;
-           float total =Volume24hz+Volume25hz+Volume26hz+Volume27hz+Volume28hz+Volume29hz+Volume30hz+Volume31hz+Volume32hz+Volume33hz+
-        Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
-        Volume44hz+Volume45hz+Volume46hz+Volume47hz;
-        if(total<1)total=1;
-           data_in[24]=std::polar<float>(Volume24hz/total, Phase24hz);
-          data_in[25]=std::polar<float>(Volume25hz/total, Phase25hz);
-          data_in[26]=std::polar<float>(Volume26hz/total, Phase26hz);
-          data_in[27]=std::polar<float>(Volume27hz/total, Phase27hz);
-          data_in[28]=std::polar<float>(Volume28hz/total, Phase28hz);
-          data_in[29]=std::polar<float>(Volume29hz/total, Phase29hz);
-          data_in[30]=std::polar<float>(Volume30hz/total, Phase30hz);
-          data_in[31]=std::polar<float>(Volume31hz/total, Phase31hz);
-          data_in[32]=std::polar<float>(Volume32hz/total, Phase32hz);
-          data_in[33]=std::polar<float>(Volume33hz/total, Phase33hz);
-          data_in[34]=std::polar<float>(Volume34hz/total, Phase34hz);
-          data_in[35]=std::polar<float>(Volume35hz/total, Phase35hz);
-          data_in[36]=std::polar<float>(Volume36hz/total, Phase36hz);
-          data_in[37]=std::polar<float>(Volume37hz/total, Phase37hz);
-          data_in[38]=std::polar<float>(Volume38hz/total, Phase38hz);
-          data_in[39]=std::polar<float>(Volume39hz/total, Phase39hz);
-          data_in[40]=std::polar<float>(Volume40hz/total, Phase40hz);
-          data_in[41]=std::polar<float>(Volume41hz/total, Phase41hz);
-          data_in[42]=std::polar<float>(Volume42hz/total, Phase42hz);
-          data_in[43]=std::polar<float>(Volume43hz/total, Phase43hz);
-          data_in[44]=std::polar<float>(Volume44hz/total, Phase44hz);
-          data_in[45]=std::polar<float>(Volume45hz/total, Phase45hz);
-          data_in[46]=std::polar<float>(Volume46hz/total, Phase46hz);
-          data_in[47]=std::polar<float>(Volume47hz/total, Phase47hz);
-        for (int i=24;i<48;i++){
-              data_in[waveformLength-i]=data_in[i];
+        //    total =Volume24hz+Volume25hz+Volume26hz+Volume27hz+Volume28hz+Volume29hz+Volume30hz+Volume31hz+Volume32hz+Volume33hz+
+        // Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
+        // Volume44hz+Volume45hz+Volume46hz+Volume47hz;
+        
+            data_in[24]=std::polar<float>(Volume24hz, Phase24hz);
+            data_in[25]=std::polar<float>(Volume25hz, Phase25hz);
+            data_in[26]=std::polar<float>(Volume26hz, Phase26hz);
+            data_in[27]=std::polar<float>(Volume27hz, Phase27hz);
+            data_in[28]=std::polar<float>(Volume28hz, Phase28hz);
+            data_in[29]=std::polar<float>(Volume29hz, Phase29hz);
+            data_in[30]=std::polar<float>(Volume30hz, Phase30hz);
+            data_in[31]=std::polar<float>(Volume31hz, Phase31hz);
+            data_in[32]=std::polar<float>(Volume32hz, Phase32hz);
+            data_in[33]=std::polar<float>(Volume33hz, Phase33hz);
+            data_in[34]=std::polar<float>(Volume34hz, Phase34hz);
+            data_in[35]=std::polar<float>(Volume35hz, Phase35hz);
+            data_in[36]=std::polar<float>(Volume36hz, Phase36hz);
+            data_in[37]=std::polar<float>(Volume37hz, Phase37hz);
+            data_in[38]=std::polar<float>(Volume38hz, Phase38hz);
+            data_in[39]=std::polar<float>(Volume39hz, Phase39hz);
+            data_in[40]=std::polar<float>(Volume40hz, Phase40hz);
+            data_in[41]=std::polar<float>(Volume41hz, Phase41hz);
+            data_in[42]=std::polar<float>(Volume42hz, Phase42hz);
+            data_in[43]=std::polar<float>(Volume43hz, Phase43hz);
+            data_in[44]=std::polar<float>(Volume44hz, Phase44hz);
+            data_in[45]=std::polar<float>(Volume45hz, Phase45hz);
+            data_in[46]=std::polar<float>(Volume46hz, Phase46hz);
+            data_in[47]=std::polar<float>(Volume47hz, Phase47hz);
+            for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
+                if(audioFile.samples[0][i-SampleOffset]+1>0)
+                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset]+1)/2,audioFile.samples[1][i-SampleOffset]*M_PI);
+        }
+        for (int i=1;i<waveformLength/2-1;i++){
+         
+             if(i) data_in[waveformLength-i]=data_in[i];
           }
+          for (int i=1;i<waveformLength;i++){
+         
+            total+=std::abs(data_in[i]);
+          }
+                    if(total<1)total=1;
+          float recip=1/total;
+                    for (int i=1;i<waveformLength;i++){
+         //weird effect
+            data_in[i]*=recip*100;
+          }
+
           std::cout<<"foo";
           pocketfft::c2c(
               shape_in,
@@ -763,6 +812,8 @@ class Additive : public Plugin {
               waveform[i]=data_out[i].real();
               //waveform[i]=0;
           }
+          safeWaveformLength=waveformLength;
+          std::cout<<"baz"<<"\n\n";
     }
        void run(const float **inputs, float **outputs, uint32_t frames) override {
         const float *const in = inputs[0];
@@ -781,8 +832,8 @@ class Additive : public Plugin {
             out[i]=waveform[position]*Gain;
 
             position+=1;
-          while(position>=waveformLength){
-                position-=waveformLength;
+          while(position>=std::min(waveformLength,safeWaveformLength)){
+                position-=std::min(waveformLength,safeWaveformLength);
            }
             //position+=1;
             //out[i]=sin(i/15)/;
@@ -846,12 +897,14 @@ class Additive : public Plugin {
     PitchCoarse,
     PitchFine;
     int Octave;
-        float waveform[sampleRate];
-        int waveformLength;
+        float waveform[maxWaveformLength];
+        int waveformLength,safeWaveformLength;
                 int position;
         int frame;
+        std::string SampleFilePath;
+        int sampleLength, SampleOffset;
 
-
+AudioFile<double> audioFile;
 
         DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Additive);
 };
