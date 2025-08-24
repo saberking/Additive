@@ -467,7 +467,7 @@ class Additive : public Plugin {
             case kSampleGain:
                 parameter.name = "Sample Gain";
                 parameter.symbol = "SampleGain";
-                parameter.ranges.def = 1.0f;
+                parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0;
                 parameter.ranges.max =12.0f;
                 parameter.hints=kParameterIsAutomatable;
@@ -475,8 +475,8 @@ class Additive : public Plugin {
                         case kDrive:
                 parameter.name = "Drive";
                 parameter.symbol = "Drive";
-                parameter.ranges.def = 100.0f;
-                parameter.ranges.min = 1.0;
+                parameter.ranges.def = 0.0f;
+                parameter.ranges.min = 0.0;
                 parameter.ranges.max =200.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
@@ -820,10 +820,11 @@ class Additive : public Plugin {
             data_in[45]=std::polar<float>(Volume45hz, Phase45hz);
             data_in[46]=std::polar<float>(Volume46hz, Phase46hz);
             data_in[47]=std::polar<float>(Volume47hz, Phase47hz);
+            if(SampleGain>0.0001f)
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
-                data_in[i]/=100;//weirdness
+                //data_in[i]/=100;//weirdness
                 if(audioFile.samples[0][i-SampleOffset]+1>0)
-                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset]+1)*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
+                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset])*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
         }
         for (int i=1;i<waveformLength/2-1;i++){
          
@@ -837,7 +838,7 @@ class Additive : public Plugin {
           float recip=1/total;
                     for (int i=1;i<waveformLength;i++){
          //weird effect
-            data_in[i]*=recip*Drive;//100
+            data_in[i]*=recip*(Drive+1);//100
           }
 
           std::cout<<"foo";
@@ -852,8 +853,9 @@ class Additive : public Plugin {
                                  fct
           );
           std::cout<<"bar";
+          float multiplier=1;///pow(waveformLength,0.5f);
           for(int i=0;i<waveformLength;i++){
-              waveform[i]=data_out[i].real();
+              waveform[i]=clamp(data_out[i].real()*multiplier);
               //waveform[i]=0;
           }
           safeWaveformLength=waveformLength;
