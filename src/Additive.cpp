@@ -16,6 +16,7 @@ class Additive : public Plugin {
           //  for(int i=0;i<waveformLength;i++){
             //    waveform[i]=sin(2*M_PI  *i/800);
         //    }
+        calculate();
 
 
 
@@ -479,6 +480,13 @@ class Additive : public Plugin {
                 parameter.ranges.max =200.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
+                                        case kAutoCalculate:
+                parameter.name = "AutoCalculate";
+                parameter.symbol = "AutoCalculate";
+                parameter.ranges.def = 0;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =2;
+                break;
 
         }
     }
@@ -597,6 +605,8 @@ class Additive : public Plugin {
             return SampleGain;
                     case kDrive:
             return Drive;
+        case kAutoCalculate:
+            return AutoCalculate;
         }
 
     }
@@ -715,22 +725,30 @@ class Additive : public Plugin {
             SampleGain=value;break;
                     case kDrive:
             Drive=value; break;
+        case kAutoCalculate:
+            AutoCalculate=value;break;
 
         }
-        calculate();
+        if(AutoCalculate>1){
+            calculate();
+        }
+
     }
     void setState(const char *key, const char *value){
-        SampleFilePath=value;
-       std::cout<<"Sample loaded: "<<value<<"\n\n";
-       audioFile.load (value);
-       int numChannels = audioFile.getNumChannels();
-       if( numChannels==2){
-sampleLength = audioFile.getNumSamplesPerChannel();
+        if(strcmp(key, "ui_plugin_load_sample")==0){
+                    SampleFilePath=value;
+            std::cout<<"Sample loaded: "<<value<<"\n\n";
+            audioFile.load (value);
+            int numChannels = audioFile.getNumChannels();
+            if( numChannels==2){
+            sampleLength = audioFile.getNumSamplesPerChannel();
 
-       }
-       else{
-        sampleLength=0;
-       }
+            }
+            else{
+                sampleLength=0;
+            }
+        }
+
        
        calculate();
     }
@@ -923,7 +941,8 @@ sampleLength = audioFile.getNumSamplesPerChannel();
     PitchCoarse,
     PitchFine,
     SampleGain,
-    Drive;
+    Drive,
+    AutoCalculate;
     int Octave;
         float waveform[maxWaveformLength];
         int waveformLength,safeWaveformLength;

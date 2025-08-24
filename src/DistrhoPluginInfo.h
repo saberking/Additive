@@ -164,6 +164,7 @@ enum Parameters {
     kSampleOffset,
     kSampleGain,
     kDrive,
+    kAutoCalculate,
     kParameterCount
 };
 
