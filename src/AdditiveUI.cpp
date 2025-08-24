@@ -68,7 +68,7 @@ const char *parameterName[kParameterCount] ={
     "SampleOffset",
     "SampleGain",
     "Drive",
-    "Auto Calculate"
+    "AutoCalculate"
 };
 // --------------------------------------------------------------------------------------------------------------------
 
