@@ -876,8 +876,9 @@ outputFile.save (fileName);
 
     void calculate(){
         std::cout<<"calculate"<<"\n\n";
-        waveformLength=(int)(sampleRate/getPitch());
-        
+        int newWaveformLength=(int)(sampleRate/getPitch());
+        if(waveformLength)position=(int)position*newWaveformLength/waveformLength;
+        waveformLength=newWaveformLength;
         std::cout<<waveformLength;
         std::vector<std::complex<float>> data_out(waveformLength);
         std::vector<std::complex<float>> data_in(waveformLength);
