@@ -165,6 +165,8 @@ enum Parameters {
     kSampleGain,
     kDrive,
     kAutoCalculate,
+    kCsvRadiusIndex,
+    kCsvArgumentIndex,
     kParameterCount
 };
 

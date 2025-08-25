@@ -4,10 +4,17 @@
 #include "parameterNames.hpp"
 #include <iostream>
 #include "AudioFile.h"
+#include <fstream>
 
 #define sampleRate 48000
 #define maxWaveformLength 3072000
 START_NAMESPACE_DISTRHO
+
+enum MyFileTypes{
+    noFileType,
+    wavFileType,
+    csvFileType
+};
 
 class Additive : public Plugin {
     public:
@@ -488,7 +495,20 @@ class Additive : public Plugin {
                 parameter.ranges.min = 0;
                 parameter.ranges.max =2;
                 break;
-
+                                        case kCsvRadiusIndex:
+                parameter.name = "CSVRadiusIndex";
+                parameter.symbol = "CSVRadiusIndex";
+                parameter.ranges.def = 0;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =32;
+                break;
+                                        case kCsvArgumentIndex:
+                parameter.name = "CSVArgumentIndex";
+                parameter.symbol = "CSVArgumentIndex";
+                parameter.ranges.def = 0;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =32;
+                break;
         }
     }
     float getParameterValue(uint32_t index) const override {
@@ -608,6 +628,10 @@ class Additive : public Plugin {
             return Drive;
         case kAutoCalculate:
             return AutoCalculate;
+        case kCsvRadiusIndex:
+            return CsvRadiusIndex;
+        case kCsvArgumentIndex:
+            return CsvArgumentIndex;
         }
 
     }
@@ -728,8 +752,12 @@ class Additive : public Plugin {
             Drive=value; break;
         case kAutoCalculate:
             AutoCalculate=value;break;
-
+        case kCsvRadiusIndex:
+            CsvRadiusIndex=value;break;
+        case kCsvArgumentIndex:
+            CsvArgumentIndex=value;break;
         }
+        std::cout<<"Param updated"<<AutoCalculate<<"\n"<<index<<"    "<<value<<"\n"<<kAutoCalculate<<"should"<<"\n";
         if(AutoCalculate>1){
             calculate();
         }
@@ -739,24 +767,63 @@ class Additive : public Plugin {
         if(strcmp(key, "ui_plugin_load_sample")==0){
                     SampleFilePath=value;
             std::cout<<"Sample loaded: "<<value<<"\n\n";
-            audioFile.load (value);
-            intAudioFile.load(value);
-            int numChannels = audioFile.getNumChannels();
-            if( numChannels==2){
-            sampleLength = audioFile.getNumSamplesPerChannel();
+            if(value[strlen(value)-4]=='.'&&value[strlen(value)-3]=='c'&&value[strlen(value)-2]=='s'&&value[strlen(value)-1]=='v'){
+                fileType=csvFileType;
+                parseCsv(value);
+            }else{
+                fileType=wavFileType;
+                            audioFile.load (value);
+                //intAudioFile.load(value);
+                int numChannels = audioFile.getNumChannels();
+                if( numChannels==2){
+                sampleLength = audioFile.getNumSamplesPerChannel();
+                csvRadius=audioFile.samples[0];
+                csvArgument=audioFile.samples[1];
 
+                }
+                else{
+                    sampleLength=0;
+                }
             }
-            else{
-                sampleLength=0;
-            }
+
             std::cout<<"state set!!!"<<"\n\n";
         }else{
             std::cout<<"buttomn"<<"\n\n";
+        }
+        calculate();
+    }
+    void parseCsv(const char *value){
+        sampleLength=0;
+        csvRadius.resize(0);
+        csvArgument.resize(0);
+        int i=0,j=0, test;;
+        std::ifstream file(value);
+        std::string str, str2; 
+        while (std::getline(file, str))
+        {
+            std::stringstream input(str);
+
+            //std::cout<<std::getline(input, str2, ','); 
+            if(!(i%100))std::cout<<str2<<"\n\n";
+            j=0;
+            while(std::getline(input, str2, ',')){
+                //std::cout<<"j: "<<j<<" Csvradiusindex"<<CsvRadiusIndex<<"\n"<<i<<str2;
+                if(j==CsvRadiusIndex){
+                    csvRadius.push_back(std::stof(str2));
+                }
+                                if(j==CsvArgumentIndex){
+                    csvArgument.push_back(std::stof(str2));
+                }
+                j++;
+            }
+            i++;
+        }
+        sampleLength=std::max<int>(csvRadius.size(), csvArgument.size());
+        std::cout<<csvRadius.size()<<csvArgument.size()<<"Ist ibig enough"<<"\n\n";
     }
 
        
-       calculate();
-    }
+       
     float clamp(float a){
         return std::max<float>(-1.0, std::min<float>(1.0,a));
     }
@@ -831,13 +898,13 @@ class Additive : public Plugin {
                 //data_in[i]/=100;//weirdness
 
                 if(!(i%100)){
-                                    std::cout<<audioFile.samples[0][i-SampleOffset]<<"\n";
-                    std::cout<<intAudioFile.samples[0][i-SampleOffset]<<"\n";
+                                    //std::cout<<csvRadius[i-SampleOffset]<<"\n";
+                    //std::cout<<intAudioFile.samples[0][i-SampleOffset]<<"\n";
                 }
 
-                if(audioFile.samples[0][i-SampleOffset]>0){
+                if(csvRadius[i-SampleOffset]>0){
 
-                    data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset])*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
+                    data_in[i]+=std::polar<float>((csvRadius[i-SampleOffset])*SampleGain/2,csvArgument[i-SampleOffset]*M_PI);
                 }
         }
         for (int i=1;i<waveformLength/2-1;i++){
@@ -962,7 +1029,7 @@ class Additive : public Plugin {
     SampleGain,
     Drive,
     AutoCalculate;
-    int Octave;
+    int Octave, CsvRadiusIndex, CsvArgumentIndex;
         float waveform[maxWaveformLength];
         int waveformLength,safeWaveformLength;
                 int position;
@@ -972,7 +1039,9 @@ class Additive : public Plugin {
     bool ready;
 
 AudioFile<float> audioFile;
-AudioFile<int> intAudioFile;
+//AudioFile<int> intAudioFile;
+std::vector<float> csvRadius, csvArgument;
+int fileType=noFileType;
 
         DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Additive);
 };

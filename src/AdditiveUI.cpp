@@ -68,7 +68,10 @@ const char *parameterName[kParameterCount] ={
     "SampleOffset",
     "SampleGain",
     "Drive",
-    "AutoCalculate"
+        "AutoCalculate",
+    "CSVRadiusIndex",
+    "CSVColumnIndex"
+
 };
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -116,7 +119,6 @@ protected:
     {
        // DISTRHO_SAFE_ASSERT_RETURN(index == 0,);
 
-std::cout<<"repaint"<<"\n\n";
         repaint();
     }
 
@@ -201,6 +203,7 @@ ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
             //     // close
             //     ImGuiFileDialog::Instance()->Close();
             // }
+
             for(int i=0;i<kParameterCount;i++){
                 start = 0.0f;
                 end=i?30.0f:2.0f;
