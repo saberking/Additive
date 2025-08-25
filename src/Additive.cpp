@@ -822,7 +822,7 @@ class Additive : public Plugin {
             }
             i++;
         }
-        sampleLength=std::max<int>(csvRadius.size(), csvArgument.size());
+        sampleLength=std::min<int>(csvRadius.size(), csvArgument.size());
         std::cout<<csvRadius.size()<<csvArgument.size()<<"Ist ibig enough"<<"\n\n";
     }
     void saveSample(const char *fileName){
@@ -929,6 +929,9 @@ outputFile.save (fileName);
             data_in[45]=std::polar<float>(Volume45hz, Phase45hz-M_PI/2);
             data_in[46]=std::polar<float>(Volume46hz, Phase46hz-M_PI/2);
             data_in[47]=std::polar<float>(Volume47hz, Phase47hz-M_PI/2);
+            for(int i=24;i<48;i++){
+                std::cout<<data_in[i];
+            }
             SampleGain=std::min<float>(SampleGain,1);
             if(SampleGain>0.0001f)
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
@@ -946,7 +949,7 @@ outputFile.save (fileName);
         }
         for (int i=1;i<waveformLength/2-1;i++){
          
-             if(i) data_in[waveformLength-i]=data_in[i];
+             //if(i) data_in[waveformLength-i]=data_in[i];
           }
           for (int i=1;i<waveformLength;i++){
          
