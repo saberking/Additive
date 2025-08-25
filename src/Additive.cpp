@@ -13,10 +13,11 @@ class Additive : public Plugin {
     public:
         Additive() : Plugin(kParameterCount, 0, 0), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
             sampleLength=0;
+            ready=false;
           //  for(int i=0;i<waveformLength;i++){
             //    waveform[i]=sin(2*M_PI  *i/800);
         //    }
-        calculate();
+        //calculate();
 
 
 
@@ -747,7 +748,10 @@ class Additive : public Plugin {
             else{
                 sampleLength=0;
             }
-        }
+            std::cout<<"state set!!!"<<"\n\n";
+        }else{
+            std::cout<<"buttomn"<<"\n\n";
+    }
 
        
        calculate();
@@ -759,10 +763,11 @@ class Additive : public Plugin {
             return pow(2,Octave+PitchCoarse/12+PitchFine/12);
         }
         void activate() override {
-            calculate();
+            //calculate();
         }
 
     void calculate(){
+        std::cout<<"calculate"<<"\n\n";
         waveformLength=(int)(sampleRate/getPitch());
         
         std::cout<<waveformLength;
@@ -823,7 +828,7 @@ class Additive : public Plugin {
             if(SampleGain>0.0001f)
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
                 //data_in[i]/=100;//weirdness
-                if(audioFile.samples[0][i-SampleOffset]+1>0)
+                if(audioFile.samples[0][i-SampleOffset]>0)
                     data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset])*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
         }
         for (int i=1;i<waveformLength/2-1;i++){
@@ -859,6 +864,7 @@ class Additive : public Plugin {
               //waveform[i]=0;
           }
           safeWaveformLength=waveformLength;
+          ready=true;
           std::cout<<"baz"<<"\n\n";
     }
        void run(const float **inputs, float **outputs, uint32_t frames) override {
@@ -874,13 +880,15 @@ class Additive : public Plugin {
             //out[i] = in[i] +1;
             //out[i]=rand()*gain/100000000;
             //out[i]= calculate(in[i])/2;
-
-            out[i]=waveform[position]*Gain;
+            out[i]=0.0f;
+            if(ready){
+                out[i]=waveform[position]*Gain;
 
             position+=1;
           while(position>=std::min(waveformLength,safeWaveformLength)){
                 position-=std::min(waveformLength,safeWaveformLength);
            }
+        }
             //position+=1;
             //out[i]=sin(i/15)/;
 
@@ -952,6 +960,7 @@ class Additive : public Plugin {
         int frame;
         std::string SampleFilePath;
         int sampleLength, SampleOffset;
+    bool ready;
 
 AudioFile<double> audioFile;
 

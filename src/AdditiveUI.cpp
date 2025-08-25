@@ -77,6 +77,7 @@ class AdditiveUI : public UI
 
     float params[kParameterCount];
     ResizeHandle fResizeHandle;
+    int dialogCount;
 
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -99,6 +100,7 @@ public:
         for(int i =0;i<kParameterCount;i++){
             params[i]=0.0f;
         }
+        dialogCount=0;
     }
 
 protected:
@@ -113,7 +115,7 @@ protected:
     {
         DISTRHO_SAFE_ASSERT_RETURN(index == 0,);
 
-
+std::cout<<"repaint"<<"\n\n";
         repaint();
     }
 
@@ -153,43 +155,48 @@ protected:
         {
             static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
            // ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
-            if (ImGui::Button("calculate")) {
+            if (ImGui::Button("calculate")) {   
                 setState("ui_plugin_calculate","foo");
             }
 
 
-            //if (ImGui::Begin("##OpenDialogCommand")) {
-            if (ImGui::Button("Open File Dialog")) {
-                IGFD::FileDialogConfig config;config.path = ".";
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".wav", config);
-            }
+            // //if (ImGui::Begin("##OpenDialogCommand")) {
+            // if (ImGui::Button("Open File Dialog")) {
+            //      std::cout<<"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"<<"\n\n";
+            //     IGFD::FileDialogConfig config;config.path = ".";
+            //     std::cout<<"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"<<"\n\n";
+            //     ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey"+std::to_string(dialogCount++), "Choose File", ".wav", config);
+            //     std::cout<<"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"<<"\n\n";
+            // }
         
-            //ImGui::End();
-            // std::cout<<"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            // display
-            if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) { // => will show a dialog
-                if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-                fFilePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-                fFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                //std::cout<<"\n\n\n\n"<<"*******************8";
-                                    // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
-                                    // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
-                                    // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
-                                    // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
-                                    // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
-                    std::cout<<fFilePath;
-                //   std::cout<<filePath;
-                //   std::cout<<filePath;
-                    std::cout<<"\n\n";
-                    std::cout<<fFilePathName; 
-                                            std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fFilePathName<<"\n\n";    
-                                            setState( "ui_plugin_load_sample", fFilePathName.c_str());    
-                    // action
-                }
+            // //ImGui::End();
+            //  std::cout<<"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"<<dialogCount<<"\n\n";
+            // // display
+            // if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey"+std::to_string(dialogCount))) { // => will show a dialog
+            //     std::cout<<"is it ok???"<<"\n\n";
+            //     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+            //         std::cout<<"Its ok"<<"\n\n";
+            //     fFilePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            //     fFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            //     //std::cout<<"\n\n\n\n"<<"*******************8";
+            //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+            //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+            //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+            //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+            //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
+            //         std::cout<<fFilePath;
+            //     //   std::cout<<filePath;
+            //     //   std::cout<<filePath;
+            //         std::cout<<"\n\n";
+            //         std::cout<<fFilePathName; 
+            //                                 std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fFilePathName<<"\n\n";    
+            //                                 setState( "ui_plugin_load_sample", fFilePathName.c_str());    
+            //         // action
+            //     }
                 
-                // close
-                ImGuiFileDialog::Instance()->Close();
-            }
+            //     // close
+            //     ImGuiFileDialog::Instance()->Close();
+            // }
             for(int i=0;i<kParameterCount;i++){
                 start = 0.0f;
                 end=i?30.0f:2.0f;
