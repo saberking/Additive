@@ -755,9 +755,9 @@ class Additive : public Plugin {
         case kAutoCalculate:
             AutoCalculate=value;break;
         case kCsvRadiusIndex:
-            CsvRadiusIndex=value;break;
+            CsvRadiusIndex=(int)value;break;
         case kCsvArgumentIndex:
-            CsvArgumentIndex=value;break;
+            CsvArgumentIndex=(int)value;break;
         }
         std::cout<<"Param updated"<<AutoCalculate<<"\n"<<index<<"    "<<value<<"\n"<<kAutoCalculate<<"should"<<"\n";
         if(AutoCalculate>1){
