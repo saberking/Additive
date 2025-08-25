@@ -211,9 +211,13 @@ protected:
 
             for(int i=0;i<kParameterCount;i++){
                 start = 0.0f;
-                end=i?30.0f:2.0f;
+                end=2.0f;
                 if(i==kOctave){
                                 addSlider(i, -6, 6);
+                }else if(i==kPitchCoarse){
+                    addSlider(i, 0, 48);
+                }else if(i==kPitchFine){
+                    addSlider(i, 0, 12);
                 }
                 else addSlider(i, start, end);
             }

@@ -6,6 +6,8 @@
 #include "AudioFile.h"
 #include <fstream>
 
+#define DEBUG 1
+
 #define sampleRate 48000
 #define maxWaveformLength 3072000
 START_NAMESPACE_DISTRHO
@@ -875,7 +877,7 @@ outputFile.save (fileName);
         }
 
     void calculate(){
-        std::cout<<"calculate"<<"\n\n";
+        if (DEBUG) std::cout<<"calculate"<<"\n\n";
         int newWaveformLength=(int)(sampleRate/getPitch());
         if(waveformLength)position=(int)position*newWaveformLength/waveformLength;
         waveformLength=newWaveformLength;
@@ -934,59 +936,57 @@ outputFile.save (fileName);
             data_in[45]=std::polar<float>(Volume45hz, Phase45hz-M_PI/2);
             data_in[46]=std::polar<float>(Volume46hz, Phase46hz-M_PI/2);
             data_in[47]=std::polar<float>(Volume47hz, Phase47hz-M_PI/2);
-            for(int i=24;i<48;i++){
+            if(DEBUG) for(int i=24;i<48;i++){
                 std::cout<<data_in[i];
             }
             SampleGain=std::min<float>(SampleGain,1);
+            int halfWave=waveformLength/2;
+            if(waveformLength%2){
+                halfWave-=1;
+            }
+            int endLoop=std::min<float>(sampleLength, halfWave);
+            float halfPi=M_PI/2;
+            float gainMultiplier=SampleGain*(Drive+1);
             if(SampleGain>0.0001f)
-            for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
-                //data_in[i]/=100;//weirdness
+                for(int i=0;i<endLoop;i++){
+                    //data_in[i]/=100;//weirdness
 
-                if(!(i%100)){
-                                    //std::cout<<csvRadius[i-SampleOffset]<<"\n";
-                    //std::cout<<intAudioFile.samples[0][i-SampleOffset]<<"\n";
+
+                    if(csvRadius[i]>0){
+
+                        data_in[i]+=std::polar<float>((csvRadius[i])*gainMultiplier,csvArgument[i]*M_PI-halfPi);
+                    }
                 }
+            //   for (int i=0;i<waveformLength;i++){
+            
+            //     total+=std::abs(data_in[i]);
+            //   }
+            //             if(total<0.000001f)total=0.000001f;
+            //   float recip=1/total;
+            //             for (int i=1;i<waveformLength;i++){
+            //  //weird effect
+            //     data_in[i]*=recip*(Drive+1);//100
+            //   }
 
-                if(csvRadius[i-SampleOffset]>0){
-
-                    data_in[i]+=std::polar<float>((csvRadius[i-SampleOffset])*SampleGain,csvArgument[i-SampleOffset]*M_PI-M_PI/2);
-                }
-        }
-        for (int i=1;i<waveformLength/2-1;i++){
-         
-             //if(i) data_in[waveformLength-i]=data_in[i];
-          }
-          for (int i=1;i<waveformLength;i++){
-         
-            total+=std::abs(data_in[i]);
-          }
-                    if(total<0.000001f)total=0.000001f;
-          float recip=1/total;
-                    for (int i=1;i<waveformLength;i++){
-         //weird effect
-            data_in[i]*=recip*(Drive+1);//100
-          }
-
-          std::cout<<"foo";
-          pocketfft::c2c(
-              shape_in,
-              stride_in,
-              stride_out,
-              axes,
-              forward,
-                  data_in.data(),
-                                 data_out.data(),
-                                 fct
-          );
-          std::cout<<"bar";
-          float multiplier=1;///pow(waveformLength,0.5f);
-          for(int i=0;i<waveformLength;i++){
-              waveform[i]=clamp(data_out[i].real()*multiplier);
-              //waveform[i]=0;
-          }
-          safeWaveformLength=waveformLength;
-          ready=true;
-          std::cout<<"baz"<<"\n\n";
+            std::cout<<"foo";
+            pocketfft::c2c(
+                shape_in,
+                stride_in,
+                stride_out,
+                axes,
+                forward,
+                    data_in.data(),
+                                    data_out.data(),
+                                    fct
+            );
+            std::cout<<"bar";
+            for(int i=0;i<waveformLength;i++){
+                waveform[i]=clamp(data_out[i].real());
+                //waveform[i]=0;
+            }
+            safeWaveformLength=waveformLength;
+            ready=true;
+            std::cout<<"baz"<<"\n\n";
     }
        void run(const float **inputs, float **outputs, uint32_t frames) override {
         const float *const in = inputs[0];
