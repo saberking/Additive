@@ -223,7 +223,6 @@ protected:
     }
     private:
                                  char fInputFilePathName[256], fOutputFilePathName[256];
-                    std::string fFilePath;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AdditiveUI)
 };
 

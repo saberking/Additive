@@ -905,30 +905,31 @@ outputFile.save (fileName);
         // Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
         // Volume44hz+Volume45hz+Volume46hz+Volume47hz;
         
-            data_in[24]=std::polar<float>(Volume24hz, Phase24hz);
-            data_in[25]=std::polar<float>(Volume25hz, Phase25hz);
-            data_in[26]=std::polar<float>(Volume26hz, Phase26hz);
-            data_in[27]=std::polar<float>(Volume27hz, Phase27hz);
-            data_in[28]=std::polar<float>(Volume28hz, Phase28hz);
-            data_in[29]=std::polar<float>(Volume29hz, Phase29hz);
-            data_in[30]=std::polar<float>(Volume30hz, Phase30hz);
-            data_in[31]=std::polar<float>(Volume31hz, Phase31hz);
-            data_in[32]=std::polar<float>(Volume32hz, Phase32hz);
-            data_in[33]=std::polar<float>(Volume33hz, Phase33hz);
-            data_in[34]=std::polar<float>(Volume34hz, Phase34hz);
-            data_in[35]=std::polar<float>(Volume35hz, Phase35hz);
-            data_in[36]=std::polar<float>(Volume36hz, Phase36hz);
-            data_in[37]=std::polar<float>(Volume37hz, Phase37hz);
-            data_in[38]=std::polar<float>(Volume38hz, Phase38hz);
-            data_in[39]=std::polar<float>(Volume39hz, Phase39hz);
-            data_in[40]=std::polar<float>(Volume40hz, Phase40hz);
-            data_in[41]=std::polar<float>(Volume41hz, Phase41hz);
-            data_in[42]=std::polar<float>(Volume42hz, Phase42hz);
-            data_in[43]=std::polar<float>(Volume43hz, Phase43hz);
-            data_in[44]=std::polar<float>(Volume44hz, Phase44hz);
-            data_in[45]=std::polar<float>(Volume45hz, Phase45hz);
-            data_in[46]=std::polar<float>(Volume46hz, Phase46hz);
-            data_in[47]=std::polar<float>(Volume47hz, Phase47hz);
+            data_in[24]=std::polar<float>(Volume24hz, Phase24hz-M_PI/2);
+            data_in[25]=std::polar<float>(Volume25hz, Phase25hz-M_PI/2);
+            data_in[26]=std::polar<float>(Volume26hz, Phase26hz-M_PI/2);
+            data_in[27]=std::polar<float>(Volume27hz, Phase27hz-M_PI/2);
+            data_in[28]=std::polar<float>(Volume28hz, Phase28hz-M_PI/2);
+            data_in[29]=std::polar<float>(Volume29hz, Phase29hz-M_PI/2);
+            data_in[30]=std::polar<float>(Volume30hz, Phase30hz-M_PI/2);
+            data_in[31]=std::polar<float>(Volume31hz, Phase31hz-M_PI/2);
+            data_in[32]=std::polar<float>(Volume32hz, Phase32hz-M_PI/2);
+            data_in[33]=std::polar<float>(Volume33hz, Phase33hz-M_PI/2);
+            data_in[34]=std::polar<float>(Volume34hz, Phase34hz-M_PI/2);
+            data_in[35]=std::polar<float>(Volume35hz, Phase35hz-M_PI/2);
+            data_in[36]=std::polar<float>(Volume36hz, Phase36hz-M_PI/2);
+            data_in[37]=std::polar<float>(Volume37hz, Phase37hz-M_PI/2);
+            data_in[38]=std::polar<float>(Volume38hz, Phase38hz-M_PI/2);
+            data_in[39]=std::polar<float>(Volume39hz, Phase39hz-M_PI/2);
+            data_in[40]=std::polar<float>(Volume40hz, Phase40hz-M_PI/2);
+            data_in[41]=std::polar<float>(Volume41hz, Phase41hz-M_PI/2);
+            data_in[42]=std::polar<float>(Volume42hz, Phase42hz-M_PI/2);
+            data_in[43]=std::polar<float>(Volume43hz, Phase43hz-M_PI/2);
+            data_in[44]=std::polar<float>(Volume44hz, Phase44hz-M_PI/2);
+            data_in[45]=std::polar<float>(Volume45hz, Phase45hz-M_PI/2);
+            data_in[46]=std::polar<float>(Volume46hz, Phase46hz-M_PI/2);
+            data_in[47]=std::polar<float>(Volume47hz, Phase47hz-M_PI/2);
+            SampleGain=std::min<float>(SampleGain,1);
             if(SampleGain>0.0001f)
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
                 //data_in[i]/=100;//weirdness
@@ -940,7 +941,7 @@ outputFile.save (fileName);
 
                 if(csvRadius[i-SampleOffset]>0){
 
-                    data_in[i]+=std::polar<float>((csvRadius[i-SampleOffset])*SampleGain/2,csvArgument[i-SampleOffset]*M_PI);
+                    data_in[i]+=std::polar<float>((csvRadius[i-SampleOffset])*SampleGain,csvArgument[i-SampleOffset]*M_PI-M_PI/2);
                 }
         }
         for (int i=1;i<waveformLength/2-1;i++){
