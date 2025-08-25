@@ -70,7 +70,7 @@ const char *parameterName[kParameterCount] ={
     "Drive",
         "AutoCalculate",
     "CSVRadiusIndex",
-    "CSVColumnIndex"
+    "CSVArgumentIndex"
 
 };
 // --------------------------------------------------------------------------------------------------------------------
@@ -104,7 +104,8 @@ public:
             params[i]=0.0f;
         }
         dialogCount=0;
-        fFilePathName[255]='\0';
+        fInputFilePathName[255]='\0';
+        fOutputFilePathName[255]='\0';
     }
 
 protected:
@@ -161,9 +162,13 @@ protected:
             if (ImGui::Button("calculate")) {   
                 setState("ui_plugin_calculate","foo");
             }
-ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
+            ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
             if (ImGui::Button("load")) {   
-                setState("ui_plugin_load_sample",fFilePathName);
+                setState("ui_plugin_load_sample",fInputFilePathName);
+            }
+            ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
+            if (ImGui::Button("save")) {   
+                setState("ui_plugin_save_sample",fOutputFilePathName);
             }
 
             // //if (ImGui::Begin("##OpenDialogCommand")) {
@@ -183,7 +188,7 @@ ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
             //     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
             //         std::cout<<"Its ok"<<"\n\n";
             //     fFilePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-            //     fFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            //     fInputFilePathName = ImGuiFileDialog::Instance()->GetFilePathName();
             //     //std::cout<<"\n\n\n\n"<<"*******************8";
             //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
             //                         // std::cout<<"lszdfghlsadiufhglsifdughlsdiufghlsdifugh8";
@@ -194,9 +199,9 @@ ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
             //     //   std::cout<<filePath;
             //     //   std::cout<<filePath;
             //         std::cout<<"\n\n";
-            //         std::cout<<fFilePathName; 
-            //                                 std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fFilePathName<<"\n\n";    
-            //                                 setState( "ui_plugin_load_sample", fFilePathName.c_str());    
+            //         std::cout<<fInputFilePathName; 
+            //                                 std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fInputFilePathName<<"\n\n";    
+            //                                 setState( "ui_plugin_load_sample", fInputFilePathName.c_str());    
             //         // action
             //     }
                 
@@ -217,7 +222,7 @@ ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
         ImGui::End();
     }
     private:
-                                 char fFilePathName[256];
+                                 char fInputFilePathName[256], fOutputFilePathName[256];
                     std::string fFilePath;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AdditiveUI)
 };

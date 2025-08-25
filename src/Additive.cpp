@@ -25,7 +25,9 @@ class Additive : public Plugin {
             //    waveform[i]=sin(2*M_PI  *i/800);
         //    }
         //calculate();
-
+            for(int i=0;i<maxWaveformLength;i++){
+                waveform.push_back(0.0f);
+            }
 
 
         }
@@ -765,7 +767,6 @@ class Additive : public Plugin {
     }
     void setState(const char *key, const char *value){
         if(strcmp(key, "ui_plugin_load_sample")==0){
-                    SampleFilePath=value;
             std::cout<<"Sample loaded: "<<value<<"\n\n";
             if(value[strlen(value)-4]=='.'&&value[strlen(value)-3]=='c'&&value[strlen(value)-2]=='s'&&value[strlen(value)-1]=='v'){
                 fileType=csvFileType;
@@ -787,8 +788,11 @@ class Additive : public Plugin {
             }
 
             std::cout<<"state set!!!"<<"\n\n";
-        }else{
-            std::cout<<"buttomn"<<"\n\n";
+        }else if(strcmp(key, "calculate")==0){
+            std::cout<<"calculatebuttonpressed"<<"\n\n";
+        }else if(strcmp(key, "ui_plugin_save_sample")==0){
+            std::cout<<"save not implemented"<<value<<"\n";
+            saveSample(value);
         }
         calculate();
     }
@@ -799,7 +803,7 @@ class Additive : public Plugin {
         int i=0,j=0, test;;
         std::ifstream file(value);
         std::string str, str2; 
-        while (std::getline(file, str))
+        while (std::getline(file, str)&&j<sampleRate)
         {
             std::stringstream input(str);
 
@@ -820,6 +824,38 @@ class Additive : public Plugin {
         }
         sampleLength=std::max<int>(csvRadius.size(), csvArgument.size());
         std::cout<<csvRadius.size()<<csvArgument.size()<<"Ist ibig enough"<<"\n\n";
+    }
+    void saveSample(const char *fileName){
+        calculate();
+        AudioFile<float> outputFile;
+        // 1. Create an AudioBuffer
+// (BTW, AudioBuffer is just a vector of vectors)
+
+AudioFile<float>::AudioBuffer buffer;
+
+// 2. Set to (e.g.) two channels
+buffer.resize (1);
+std::cout<<"bufffer resized"<<"\n";
+// 3. Set number of samples per channel
+buffer[0].resize (waveformLength);
+std::cout<<"bufffer resized"<<"\n";
+buffer[0]=waveform;
+
+bool ok = outputFile.setAudioBuffer (buffer);
+if(ok){
+outputFile.setAudioBufferSize (1, waveformLength);
+std::cout<<"audipo resized"<<"\n";
+
+outputFile.setBitDepth (16);
+std::cout<<"bitdept resized"<<"\n";
+outputFile.setSampleRate (48000);
+std::cout<<"saplerateresized"<<fileName<<"\n";
+
+outputFile.save (fileName);
+}else{
+    std::cout<<"error!!!!!!!"<<"\n";
+}
+
     }
 
        
@@ -1030,15 +1066,15 @@ class Additive : public Plugin {
     Drive,
     AutoCalculate;
     int Octave, CsvRadiusIndex, CsvArgumentIndex;
-        float waveform[maxWaveformLength];
+        std::vector<float> waveform;
         int waveformLength,safeWaveformLength;
                 int position;
         int frame;
-        std::string SampleFilePath;
         int sampleLength, SampleOffset;
     bool ready;
 
 AudioFile<float> audioFile;
+
 //AudioFile<int> intAudioFile;
 std::vector<float> csvRadius, csvArgument;
 int fileType=noFileType;
