@@ -118,7 +118,7 @@ protected:
     */
     void parameterChanged(uint32_t index, float value) override
     {
-       // DISTRHO_SAFE_ASSERT_RETURN(index == 0,);
+       params[index]=value;
 
         repaint();
     }
