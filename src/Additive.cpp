@@ -803,16 +803,20 @@ class Additive : public Plugin {
         int i=0,j=0, test;;
         std::ifstream file(value);
         std::string str, str2; 
-        while (std::getline(file, str)&&j<sampleRate)
+        while (std::getline(file, str)&&i<sampleRate)
         {
             std::stringstream input(str);
 
             //std::cout<<std::getline(input, str2, ','); 
-            if(!(i%100))std::cout<<str2<<"\n\n";
             j=0;
             while(std::getline(input, str2, ',')){
                 //std::cout<<"j: "<<j<<" Csvradiusindex"<<CsvRadiusIndex<<"\n"<<i<<str2;
+
+
                 if(j==CsvRadiusIndex){
+                                                                    //if(!(i%100))
+                                                                    std::cout<<"str2"<<str2<<"i"<<i<<"\n\n";
+
                     csvRadius.push_back(std::stof(str2));
                 }
                                 if(j==CsvArgumentIndex){
@@ -955,7 +959,7 @@ outputFile.save (fileName);
          
             total+=std::abs(data_in[i]);
           }
-                    if(total<1)total=1;
+                    if(total<0.000001f)total=0.000001f;
           float recip=1/total;
                     for (int i=1;i<waveformLength;i++){
          //weird effect
