@@ -101,6 +101,7 @@ public:
             params[i]=0.0f;
         }
         dialogCount=0;
+        fFilePathName[255]='\0';
     }
 
 protected:
@@ -113,7 +114,7 @@ protected:
     */
     void parameterChanged(uint32_t index, float value) override
     {
-        DISTRHO_SAFE_ASSERT_RETURN(index == 0,);
+       // DISTRHO_SAFE_ASSERT_RETURN(index == 0,);
 
 std::cout<<"repaint"<<"\n\n";
         repaint();
@@ -158,7 +159,10 @@ std::cout<<"repaint"<<"\n\n";
             if (ImGui::Button("calculate")) {   
                 setState("ui_plugin_calculate","foo");
             }
-
+ImGui::InputTextMultiline("filepath", fFilePathName, sizeof(fFilePathName));
+            if (ImGui::Button("load")) {   
+                setState("ui_plugin_load_sample",fFilePathName);
+            }
 
             // //if (ImGui::Begin("##OpenDialogCommand")) {
             // if (ImGui::Button("Open File Dialog")) {
@@ -210,7 +214,7 @@ std::cout<<"repaint"<<"\n\n";
         ImGui::End();
     }
     private:
-                            std::string fFilePathName;
+                                 char fFilePathName[256];
                     std::string fFilePath;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AdditiveUI)
 };

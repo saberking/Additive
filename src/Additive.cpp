@@ -740,6 +740,7 @@ class Additive : public Plugin {
                     SampleFilePath=value;
             std::cout<<"Sample loaded: "<<value<<"\n\n";
             audioFile.load (value);
+            intAudioFile.load(value);
             int numChannels = audioFile.getNumChannels();
             if( numChannels==2){
             sampleLength = audioFile.getNumSamplesPerChannel();
@@ -828,8 +829,16 @@ class Additive : public Plugin {
             if(SampleGain>0.0001f)
             for(int i=SampleOffset;i<sampleLength+SampleOffset&&i<=waveformLength/2-1;i++){
                 //data_in[i]/=100;//weirdness
-                if(audioFile.samples[0][i-SampleOffset]>0)
+
+                if(!(i%100)){
+                                    std::cout<<audioFile.samples[0][i-SampleOffset]<<"\n";
+                    std::cout<<intAudioFile.samples[0][i-SampleOffset]<<"\n";
+                }
+
+                if(audioFile.samples[0][i-SampleOffset]>0){
+
                     data_in[i]+=std::polar<float>((audioFile.samples[0][i-SampleOffset])*SampleGain/2,audioFile.samples[1][i-SampleOffset]*M_PI);
+                }
         }
         for (int i=1;i<waveformLength/2-1;i++){
          
@@ -962,7 +971,8 @@ class Additive : public Plugin {
         int sampleLength, SampleOffset;
     bool ready;
 
-AudioFile<double> audioFile;
+AudioFile<float> audioFile;
+AudioFile<int> intAudioFile;
 
         DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Additive);
 };
