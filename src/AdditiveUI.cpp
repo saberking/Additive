@@ -7,60 +7,64 @@
 
 #include "DistrhoUI.hpp"
 #include "ResizeHandle.hpp"
-#include "parameterNames.hpp"
 #include "../ImGuiFileDialog/ImGuiFileDialog.h"
 #include <iostream>
-
+namespace bar{
+#include "parameterNames.hpp"
+}
 START_NAMESPACE_DISTRHO
+#define DEBUG 0
+
 const char *parameterName[kParameterCount] ={
 "Gain",
     "Volume24hz",
-    "Volume25hz",
-    "Volume26hz",
-    "Volume27hz",
-    "Volume28hz",
-    "Volume29hz",
-    "Volume30hz",
-    "Volume31hz",
-    "Volume32hz",
-    "Volume33hz",
-    "Volume34hz",
-    "Volume35hz",
-    "Volume36hz",
-    "Volume37hz",
-    "Volume38hz",
-    "Volume39hz",
-    "Volume40hz",
-    "Volume41hz",
-    "Volume42hz",
-    "Volume43hz",
-    "Volume44hz",
-    "Volume45hz",
-    "Volume46hz",
-    "Volume47hz",
     "Phase24hz",
-    "Phase25hz",
+    "Volume25hz",
+        "Phase25hz",
+
+    "Volume26hz",
     "Phase26hz",
+    "Volume27hz",
     "Phase27hz",
+    "Volume28hz",
     "Phase28hz",
+    "Volume29hz",
     "Phase29hz",
-    "Phase30hz",
-    "Phase31hz",
-    "Phase32hz",
-    "Phase33hz",
-    "Phase34hz",
-    "Phase35hz",
-    "Phase36hz",
-    "Phase37hz",
-    "Phase38hz",
-    "Phase39hz",
-    "Phase40hz",
-    "Phase41hz",
-    "Phase42hz",
-    "Phase43hz",
-    "Phase44hz",
-    "Phase45hz",
-    "Phase46hz",
+    "Volume30hz",
+     "Phase30hz",
+   "Volume31hz",
+     "Phase31hz",
+   "Volume32hz",
+      "Phase32hz",
+  "Volume33hz",
+     "Phase33hz",
+   "Volume34hz",
+      "Phase34hz",
+  "Volume35hz",
+      "Phase35hz",
+  "Volume36hz",
+      "Phase36hz",
+  "Volume37hz",
+     "Phase37hz",
+   "Volume38hz",
+     "Phase38hz",
+   "Volume39hz",
+     "Phase39hz",
+   "Volume40hz",
+     "Phase40hz",
+   "Volume41hz",
+      "Phase41hz",
+  "Volume42hz",
+     "Phase42hz",
+   "Volume43hz",
+     "Phase43hz",
+   "Volume44hz",
+       "Phase44hz",
+ "Volume45hz",
+     "Phase45hz",
+   "Volume46hz",
+     "Phase46hz",
+   "Volume47hz",
     "Phase47hz",
     "Octave",
     "PitchCoarse",
@@ -68,7 +72,7 @@ const char *parameterName[kParameterCount] ={
     "SampleOffset",
     "SampleGain",
     "Drive",
-        "AutoCalculate",
+        "Freeze",
     "CSVRadiusIndex",
     "CSVArgumentIndex"
 
@@ -124,7 +128,7 @@ protected:
     }
 
     void addSlider(int i, float start, float end){
-                    if (ImGui::SliderFloat(parameterName[i], &(params[i]), start, end))
+                    if (ImGui::SliderFloat(bar::getParameterName(i), &(params[i]), start, end))
             {
                 if (ImGui::IsItemActivated())
                     editParameter(i, true);
@@ -147,6 +151,7 @@ protected:
     void stateChanged(const char* key, const char * value){}
     void onImGuiDisplay() override
     {
+        if(DEBUG)std::cout<<"GUIDISPLAY"<<"\n\n";
         float start, end;
         const float width = getWidth();
         const float height = getHeight();
@@ -157,19 +162,7 @@ protected:
 
         if (ImGui::Begin("Simple gain", nullptr, ImGuiWindowFlags_NoResize))
         {
-            static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
-           // ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
-            if (ImGui::Button("calculate")) {   
-                setState("ui_plugin_calculate","foo");
-            }
-            ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
-            if (ImGui::Button("load")) {   
-                setState("ui_plugin_load_sample",fInputFilePathName);
-            }
-            ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
-            if (ImGui::Button("save")) {   
-                setState("ui_plugin_save_sample",fOutputFilePathName);
-            }
+            
 
             // //if (ImGui::Begin("##OpenDialogCommand")) {
             // if (ImGui::Button("Open File Dialog")) {
@@ -221,9 +214,23 @@ protected:
                 }
                 else addSlider(i, start, end);
             }
+            static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
+           // ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
+            if (ImGui::Button("calculate")) {   
+                setState("ui_plugin_calculate","foo");
+            }
+            ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
+            if (ImGui::Button("load")) {   
+                setState("ui_plugin_load_sample",fInputFilePathName);
+            }
+            ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
+            if (ImGui::Button("save")) {   
+                setState("ui_plugin_save_sample",fOutputFilePathName);
+            }
           //  }
         }
         ImGui::End();
+                if(DEBUG)std::cout<<"GUIDISPLAYfinished"<<"\n\n";
     }
     private:
                                  char fInputFilePathName[256], fOutputFilePathName[256];

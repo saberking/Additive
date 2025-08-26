@@ -1,15 +1,19 @@
 #include "DistrhoPlugin.hpp"
 #include "pocketfft_hdronly.h"
 #include <algorithm>
-#include "parameterNames.hpp"
 #include <iostream>
 #include "AudioFile.h"
 #include <fstream>
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define sampleRate 48000
 #define maxWaveformLength 3072000
+namespace foo{
+#include "parameterNames.hpp"
+}
+
+
 START_NAMESPACE_DISTRHO
 
 enum MyFileTypes{
@@ -17,21 +21,75 @@ enum MyFileTypes{
     wavFileType,
     csvFileType
 };
-
+  
 class Additive : public Plugin {
     public:
         Additive() : Plugin(kParameterCount, 0, 0), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
             sampleLength=0;
             ready=false;
-          //  for(int i=0;i<waveformLength;i++){
-            //    waveform[i]=sin(2*M_PI  *i/800);
-        //    }
-        //calculate();
+
             for(int i=0;i<maxWaveformLength;i++){
                 waveform.push_back(0.0f);
             }
-
-
+            Octave=0;
+            PitchCoarse=0;
+            PitchFine=0;
+        Volume24hz=0;
+    Volume25hz=0;
+    Volume26hz=0;
+    Volume27hz=0;
+    Volume28hz=0;
+    Volume29hz=0;
+    Volume30hz=0;
+    Volume31hz=0;
+    Volume32hz=0;
+    Volume33hz=0;
+    Volume34hz=0;
+    Volume35hz=0;
+    Volume36hz=0;
+    Volume37hz=0;
+    Volume38hz=0;
+    Volume39hz=0;
+    Volume40hz=0;
+    Volume41hz=0;
+    Volume42hz=0;
+    Volume43hz=0;
+    Volume44hz=0;
+    Volume45hz=0;
+    Volume46hz=0;
+    Volume47hz=0;
+    Phase24hz=0;
+    Phase25hz=0;
+    Phase26hz=0;
+    Phase27hz=0;
+    Phase28hz=0;
+    Phase29hz=0;
+    Phase30hz=0;
+    Phase31hz=0;
+    Phase32hz=0;
+    Phase33hz=0;
+    Phase34hz=0;
+    Phase35hz=0;
+    Phase36hz=0;
+    Phase37hz=0;
+    Phase38hz=0;
+    Phase39hz=0;
+    Phase40hz=0;
+    Phase41hz=0;
+    Phase42hz=0;
+    Phase43hz=0;
+    Phase44hz=0;
+    Phase45hz=0;
+    Phase46hz=0;
+    Phase47hz=0;
+    PitchCoarse=0;
+    PitchFine=0;
+    SampleGain=0;
+    Drive=0;
+    Freeze=0;
+   CsvRadiusIndex=0; 
+   CsvArgumentIndex=0;
+calculate();
         }
     protected:
 
@@ -50,10 +108,10 @@ class Additive : public Plugin {
 		String &  	programName ){
             programName="foo";
         } 	
+
     void initParameter (uint32_t index, Parameter& parameter) override {
         switch (index) {
             case kGain:
-                parameter.name = "Gain";
                 parameter.symbol = "Gain";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -61,7 +119,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume24hz:
-                parameter.name = "Volume 24hz";
                 parameter.symbol = "Volume24hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -69,7 +126,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume25hz:
-                parameter.name = "Volume 25hz";
                 parameter.symbol = "Volume25hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -77,7 +133,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume26hz:
-                parameter.name = "Volume 26hz";
                 parameter.symbol = "Volume26z";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -85,7 +140,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume27hz:
-                parameter.name = "Volume 27hz";
                 parameter.symbol = "Volume27hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -93,7 +147,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume28hz:
-                parameter.name = "Volume 28hz";
                 parameter.symbol = "Volume28hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -101,7 +154,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume29hz:
-                parameter.name = "Volume 29hz";
                 parameter.symbol = "Volume29hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -109,7 +161,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume30hz:
-                parameter.name = "Volume 30hz";
                 parameter.symbol = "Volume30hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -117,7 +168,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume31hz:
-                parameter.name = "Volume 31hz";
                 parameter.symbol = "Volume31hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -125,7 +175,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume32hz:
-                parameter.name = "Volume 32hz";
                 parameter.symbol = "Volume32hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -133,7 +182,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume33hz:
-                parameter.name = "Volume 33hz";
                 parameter.symbol = "Volume33hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -141,7 +189,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume34hz:
-                parameter.name = "Volume 34hz";
                 parameter.symbol = "Volume34hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -149,7 +196,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume35hz:
-                parameter.name = "Volume 35hz";
                 parameter.symbol = "Volume35hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -157,7 +203,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume36hz:
-                parameter.name = "Volume 36hz";
                 parameter.symbol = "Volume36hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -165,7 +210,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume37hz:
-                parameter.name = "Volume 37hz";
                 parameter.symbol = "Volume37hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -173,7 +217,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume38hz:
-                parameter.name = "Volume 38hz";
                 parameter.symbol = "Volume38hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -181,7 +224,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume39hz:
-                parameter.name = "Volume 39hz";
                 parameter.symbol = "Volume39hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -189,7 +231,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume40hz:
-                parameter.name = "Volume 40hz";
                 parameter.symbol = "Volume40hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -197,7 +238,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume41hz:
-                parameter.name = "Volume 41hz";
                 parameter.symbol = "Volume41hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -205,7 +245,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume42hz:
-                parameter.name = "Volume 42hz";
                 parameter.symbol = "Volume42hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -213,7 +252,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume43hz:
-                parameter.name = "Volume 43hz";
                 parameter.symbol = "Volume43hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -221,7 +259,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume44hz:
-                parameter.name = "Volume 44hz";
                 parameter.symbol = "Volume44hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -229,7 +266,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume45hz:
-                parameter.name = "Volume 45hz";
                 parameter.symbol = "Volume45hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -237,7 +273,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume46hz:
-                parameter.name = "Volume 46hz";
                 parameter.symbol = "Volume46hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -245,7 +280,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kVolume47hz:
-                parameter.name = "Volume 47hz";
                 parameter.symbol = "Volume47hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -253,7 +287,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase24hz:
-                parameter.name = "Phase 24hz";
                 parameter.symbol = "Phase24hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -261,7 +294,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase25hz:
-                parameter.name = "Phase 25hz";
                 parameter.symbol = "Phase25hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -269,7 +301,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase26hz:
-                parameter.name = "Phase 26hz";
                 parameter.symbol = "Phase26z";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -277,7 +308,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase27hz:
-                parameter.name = "Phase 27hz";
                 parameter.symbol = "Phase27hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -285,7 +315,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase28hz:
-                parameter.name = "Phase 28hz";
                 parameter.symbol = "Phase28hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -293,7 +322,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase29hz:
-                parameter.name = "Phase 29hz";
                 parameter.symbol = "Phase29hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -301,7 +329,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase30hz:
-                parameter.name = "Phase 30hz";
                 parameter.symbol = "Phase30hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -309,7 +336,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase31hz:
-                parameter.name = "Phase 31hz";
                 parameter.symbol = "Phase31hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -317,7 +343,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase32hz:
-                parameter.name = "Phase 32hz";
                 parameter.symbol = "Phase32hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -325,7 +350,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase33hz:
-                parameter.name = "Phase 33hz";
                 parameter.symbol = "Phase33hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -333,7 +357,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase34hz:
-                parameter.name = "Phase 34hz";
                 parameter.symbol = "Phase34hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -341,7 +364,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase35hz:
-                parameter.name = "Phase 35hz";
                 parameter.symbol = "Phase35hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -349,7 +371,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase36hz:
-                parameter.name = "Phase 36hz";
                 parameter.symbol = "Phase36hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -357,7 +378,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase37hz:
-                parameter.name = "Phase 37hz";
                 parameter.symbol = "Phase37hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -365,7 +385,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase38hz:
-                parameter.name = "Phase 38hz";
                 parameter.symbol = "Phase38hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -373,7 +392,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase39hz:
-                parameter.name = "Phase 39hz";
                 parameter.symbol = "Phase39hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -381,7 +399,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase40hz:
-                parameter.name = "Phase 40hz";
                 parameter.symbol = "Phase40hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -389,7 +406,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase41hz:
-                parameter.name = "Phase 41hz";
                 parameter.symbol = "Phase41hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -397,7 +413,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase42hz:
-                parameter.name = "Phase 42hz";
                 parameter.symbol = "Phase42hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -405,7 +420,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase43hz:
-                parameter.name = "Phase 43hz";
                 parameter.symbol = "Phase43hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -413,7 +427,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase44hz:
-                parameter.name = "Phase 44hz";
                 parameter.symbol = "Phase44hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -421,7 +434,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase45hz:
-                parameter.name = "Phase 45hz";
                 parameter.symbol = "Phase45hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -429,7 +441,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase46hz:
-                parameter.name = "Phase 46hz";
                 parameter.symbol = "Phase46hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -437,7 +448,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPhase47hz:
-                parameter.name = "Phase 47hz";
                 parameter.symbol = "Phase47hz";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0f;
@@ -445,7 +455,6 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kOctave:
-                parameter.name = "Octave";
                 parameter.symbol = "Octave";
                 parameter.ranges.def = 0;
                 parameter.ranges.min = -6;
@@ -453,23 +462,20 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPitchCoarse:
-                parameter.name = "Pitch Coarse";
                 parameter.symbol = "PitchCoarse";
                 parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -48.0f;
+                parameter.ranges.min = 0.0f;
                 parameter.ranges.max =48.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPitchFine:
-                parameter.name = "Pitch Fine";
                 parameter.symbol = "PitchFine";
                 parameter.ranges.def = 0.0f;
-                parameter.ranges.min = -12.0f;
+                parameter.ranges.min = 0.0f;
                 parameter.ranges.max =12.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kSampleOffset:
-                parameter.name = "Sanple Offset";
                 parameter.symbol = "SampleOffset";
                 parameter.ranges.def = 0;
                 parameter.ranges.min = 0;
@@ -477,43 +483,40 @@ class Additive : public Plugin {
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kSampleGain:
-                parameter.name = "Sample Gain";
                 parameter.symbol = "SampleGain";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0;
-                parameter.ranges.max =12.0f;
+                parameter.ranges.max =2.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
                         case kDrive:
-                parameter.name = "Drive";
                 parameter.symbol = "Drive";
                 parameter.ranges.def = 0.0f;
                 parameter.ranges.min = 0.0;
-                parameter.ranges.max =200.0f;
+                parameter.ranges.max =2.0f;
                 parameter.hints=kParameterIsAutomatable;
                 break;
-                                        case kAutoCalculate:
-                parameter.name = "AutoCalculate";
-                parameter.symbol = "AutoCalculate";
+                                        case kFreeze:
+                parameter.symbol = "Freeze";
                 parameter.ranges.def = 0;
                 parameter.ranges.min = 0;
                 parameter.ranges.max =2;
                 break;
                                         case kCsvRadiusIndex:
-                parameter.name = "CSVRadiusIndex";
                 parameter.symbol = "CSVRadiusIndex";
                 parameter.ranges.def = 0;
                 parameter.ranges.min = 0;
-                parameter.ranges.max =32;
+                parameter.ranges.max =31;
                 break;
                                         case kCsvArgumentIndex:
-                parameter.name = "CSVArgumentIndex";
                 parameter.symbol = "CSVArgumentIndex";
                 parameter.ranges.def = 0;
                 parameter.ranges.min = 0;
-                parameter.ranges.max =32;
+                parameter.ranges.max =31;
                 break;
         }
+                        parameter.name = foo::getParameterName(index);
+
     }
     float getParameterValue(uint32_t index) const override {
         switch (index) {
@@ -630,8 +633,8 @@ class Additive : public Plugin {
             return SampleGain;
                     case kDrive:
             return Drive;
-        case kAutoCalculate:
-            return AutoCalculate;
+        case kFreeze:
+            return Freeze;
         case kCsvRadiusIndex:
             return CsvRadiusIndex;
         case kCsvArgumentIndex:
@@ -754,17 +757,16 @@ class Additive : public Plugin {
             SampleGain=value;break;
                     case kDrive:
             Drive=value; break;
-        case kAutoCalculate:
-            AutoCalculate=value;break;
+        case kFreeze:
+            Freeze=value;break;
         case kCsvRadiusIndex:
             CsvRadiusIndex=(int)value;break;
         case kCsvArgumentIndex:
             CsvArgumentIndex=(int)value;break;
         }
-        std::cout<<"Param updated"<<AutoCalculate<<"\n"<<index<<"    "<<value<<"\n"<<kAutoCalculate<<"should"<<"\n";
-        if(AutoCalculate>1){
-            calculate();
-        }
+        if(DEBUG)std::cout<<"Param updated"<<Freeze<<"\n"<<index<<"    "<<value<<"\n"<<kFreeze<<"should"<<"\n";
+        paramUpdated=true;
+                if(paramUpdated&&Freeze<1&&index!=kGain) calculate(index);
 
     }
     void setState(const char *key, const char *value){
@@ -793,7 +795,6 @@ class Additive : public Plugin {
         }else if(strcmp(key, "calculate")==0){
             std::cout<<"calculatebuttonpressed"<<"\n\n";
         }else if(strcmp(key, "ui_plugin_save_sample")==0){
-            std::cout<<"save not implemented"<<value<<"\n";
             saveSample(value);
         }
         calculate();
@@ -870,18 +871,26 @@ outputFile.save (fileName);
         return std::max<float>(-1.0, std::min<float>(1.0,a));
     }
         float getPitch(){
-            return pow(2,Octave+PitchCoarse/12+PitchFine/12);
+                            if (DEBUG) std::cout<<"gettingpiutch"<<Octave<<"    "<<PitchCoarse<<"    "<<PitchFine<<"\n\n";
+            return std::min<float>(pow(2,Octave+PitchCoarse/12+PitchFine/12),sampleRate/48) ;
         }
         void activate() override {
             //calculate();
         }
 
-    void calculate(){
+    void calculate(uint32_t index=9999){
         if (DEBUG) std::cout<<"calculate"<<"\n\n";
-        int newWaveformLength=(int)(sampleRate/getPitch());
-        if(waveformLength)position=(int)position*newWaveformLength/waveformLength;
+        float pitch=getPitch();
+                if (DEBUG) std::cout<<"pitch"<<pitch<<"\n\n";
+
+        if (DEBUG) std::cout<<sampleRate/pitch<<sampleRate<<pitch<<"\n\n";
+                if (DEBUG) std::cout<<maxWaveformLength<<"\n\n";
+
+        int newWaveformLength=std::min<int>(sampleRate/pitch, maxWaveformLength);
+        if(waveformLength)position=position*newWaveformLength/waveformLength;
         waveformLength=newWaveformLength;
-        std::cout<<waveformLength;
+        position=position%waveformLength;
+        if(DEBUG)std::cout<<waveformLength<<"\n\n";
         std::vector<std::complex<float>> data_out(waveformLength);
         std::vector<std::complex<float>> data_in(waveformLength);
                 pocketfft::shape_t shape_in{1};                                              // dimensions of the input shape
@@ -908,37 +917,38 @@ outputFile.save (fileName);
         //   // std::vector<std::complex<float>> data_out(sampleRate);
           
         //   // frequencies[800]=1;
-        //    total =Volume24hz+Volume25hz+Volume26hz+Volume27hz+Volume28hz+Volume29hz+Volume30hz+Volume31hz+Volume32hz+Volume33hz+
-        // Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
-        // Volume44hz+Volume45hz+Volume46hz+Volume47hz;
-        
-            data_in[24]=std::polar<float>(Volume24hz, Phase24hz-M_PI/2);
-            data_in[25]=std::polar<float>(Volume25hz, Phase25hz-M_PI/2);
-            data_in[26]=std::polar<float>(Volume26hz, Phase26hz-M_PI/2);
-            data_in[27]=std::polar<float>(Volume27hz, Phase27hz-M_PI/2);
-            data_in[28]=std::polar<float>(Volume28hz, Phase28hz-M_PI/2);
-            data_in[29]=std::polar<float>(Volume29hz, Phase29hz-M_PI/2);
-            data_in[30]=std::polar<float>(Volume30hz, Phase30hz-M_PI/2);
-            data_in[31]=std::polar<float>(Volume31hz, Phase31hz-M_PI/2);
-            data_in[32]=std::polar<float>(Volume32hz, Phase32hz-M_PI/2);
-            data_in[33]=std::polar<float>(Volume33hz, Phase33hz-M_PI/2);
-            data_in[34]=std::polar<float>(Volume34hz, Phase34hz-M_PI/2);
-            data_in[35]=std::polar<float>(Volume35hz, Phase35hz-M_PI/2);
-            data_in[36]=std::polar<float>(Volume36hz, Phase36hz-M_PI/2);
-            data_in[37]=std::polar<float>(Volume37hz, Phase37hz-M_PI/2);
-            data_in[38]=std::polar<float>(Volume38hz, Phase38hz-M_PI/2);
-            data_in[39]=std::polar<float>(Volume39hz, Phase39hz-M_PI/2);
-            data_in[40]=std::polar<float>(Volume40hz, Phase40hz-M_PI/2);
-            data_in[41]=std::polar<float>(Volume41hz, Phase41hz-M_PI/2);
-            data_in[42]=std::polar<float>(Volume42hz, Phase42hz-M_PI/2);
-            data_in[43]=std::polar<float>(Volume43hz, Phase43hz-M_PI/2);
-            data_in[44]=std::polar<float>(Volume44hz, Phase44hz-M_PI/2);
-            data_in[45]=std::polar<float>(Volume45hz, Phase45hz-M_PI/2);
-            data_in[46]=std::polar<float>(Volume46hz, Phase46hz-M_PI/2);
-            data_in[47]=std::polar<float>(Volume47hz, Phase47hz-M_PI/2);
-            if(DEBUG) for(int i=24;i<48;i++){
-                std::cout<<data_in[i];
-            }
+           total =Volume24hz+Volume25hz+Volume26hz+Volume27hz+Volume28hz+Volume29hz+Volume30hz+Volume31hz+Volume32hz+Volume33hz+
+        Volume34hz+Volume35hz+Volume36hz+Volume37hz+Volume38hz+Volume39hz+Volume40hz+Volume41hz+Volume42hz+Volume43hz+
+        Volume44hz+Volume45hz+Volume46hz+Volume47hz;
+        total=std::max<float>(total,1.0f);
+                    float rc=1/total;
+        float normalisedDrive=(Drive*30+1)*rc;
+            data_in[24]=std::polar<float>(Volume24hz*normalisedDrive, M_PI*Phase24hz-M_PI/2);
+            data_in[25]=std::polar<float>(Volume25hz*normalisedDrive, M_PI*Phase25hz-M_PI/2);
+            data_in[26]=std::polar<float>(Volume26hz*normalisedDrive, M_PI*Phase26hz-M_PI/2);
+            data_in[27]=std::polar<float>(Volume27hz*normalisedDrive, M_PI*Phase27hz-M_PI/2);
+            data_in[28]=std::polar<float>(Volume28hz*normalisedDrive, M_PI*Phase28hz-M_PI/2);
+            data_in[29]=std::polar<float>(Volume29hz*normalisedDrive, M_PI*Phase29hz-M_PI/2);
+            data_in[30]=std::polar<float>(Volume30hz*normalisedDrive, M_PI*Phase30hz-M_PI/2);
+            data_in[31]=std::polar<float>(Volume31hz*normalisedDrive, M_PI*Phase31hz-M_PI/2);
+            data_in[32]=std::polar<float>(Volume32hz*normalisedDrive, M_PI*Phase32hz-M_PI/2);
+            data_in[33]=std::polar<float>(Volume33hz*normalisedDrive, M_PI*Phase33hz-M_PI/2);
+            data_in[34]=std::polar<float>(Volume34hz*normalisedDrive, M_PI*Phase34hz-M_PI/2);
+            data_in[35]=std::polar<float>(Volume35hz*normalisedDrive, M_PI*Phase35hz-M_PI/2);
+            data_in[36]=std::polar<float>(Volume36hz*normalisedDrive, M_PI*Phase36hz-M_PI/2);
+            data_in[37]=std::polar<float>(Volume37hz*normalisedDrive, M_PI*Phase37hz-M_PI/2);
+            data_in[38]=std::polar<float>(Volume38hz*normalisedDrive, M_PI*Phase38hz-M_PI/2);
+            data_in[39]=std::polar<float>(Volume39hz*normalisedDrive, M_PI*Phase39hz-M_PI/2);
+            data_in[40]=std::polar<float>(Volume40hz*normalisedDrive, M_PI*Phase40hz-M_PI/2);
+            data_in[41]=std::polar<float>(Volume41hz*normalisedDrive, M_PI*Phase41hz-M_PI/2);
+            data_in[42]=std::polar<float>(Volume42hz*normalisedDrive, M_PI*Phase42hz-M_PI/2);
+            data_in[43]=std::polar<float>(Volume43hz*normalisedDrive, M_PI*Phase43hz-M_PI/2);
+            data_in[44]=std::polar<float>(Volume44hz*normalisedDrive, M_PI*Phase44hz-M_PI/2);
+            data_in[45]=std::polar<float>(Volume45hz*normalisedDrive, M_PI*Phase45hz-M_PI/2);
+            data_in[46]=std::polar<float>(Volume46hz*normalisedDrive, M_PI*Phase46hz-M_PI/2);
+            data_in[47]=std::polar<float>(Volume47hz*normalisedDrive, M_PI*Phase47hz-M_PI/2);
+
+
             SampleGain=std::min<float>(SampleGain,1);
             int halfWave=waveformLength/2;
             if(waveformLength%2){
@@ -946,7 +956,7 @@ outputFile.save (fileName);
             }
             int endLoop=std::min<float>(sampleLength, halfWave);
             float halfPi=M_PI/2;
-            float gainMultiplier=SampleGain*(Drive+1);
+            float gainMultiplier=SampleGain*normalisedDrive;
             if(SampleGain>0.0001f)
                 for(int i=0;i<endLoop;i++){
                     //data_in[i]/=100;//weirdness
@@ -986,6 +996,7 @@ outputFile.save (fileName);
             }
             safeWaveformLength=waveformLength;
             ready=true;
+            paramUpdated=false;
             std::cout<<"baz"<<"\n\n";
     }
        void run(const float **inputs, float **outputs, uint32_t frames) override {
@@ -995,25 +1006,27 @@ outputFile.save (fileName);
         // for(int i=0;i<waveformLength;i++){
         //     waveform[i]=sin(2*M_PI  *i*PitchRange/800);
         // }
+        if(DEBUG)std::cout<<"running"<<"\n\n";
+
+        int minlength=std::min(waveformLength,safeWaveformLength);
 
         for (uint32_t i = 0; i < frames; i++) {
-            //calculate();
-            //out[i] = in[i] +1;
-            //out[i]=rand()*gain/100000000;
-            //out[i]= calculate(in[i])/2;
+
             out[i]=0.0f;
+            if(DEBUG)std::cout<<"initialised output"<<"\n\n";
             if(ready){
+                position=position%minlength;
+                if(DEBUG)std::cout<<"position"<<position<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
                 out[i]=waveform[position]*Gain;
 
-            position+=1;
-          while(position>=std::min(waveformLength,safeWaveformLength)){
-                position-=std::min(waveformLength,safeWaveformLength);
-           }
-        }
+                position+=1;
+                if(DEBUG)std::cout<<"addedropos"<<"\n\n";
+            }
             //position+=1;
             //out[i]=sin(i/15)/;
 
         }
+                if(DEBUG)std::cout<<"finisedrunning"<<"\n\n";
         // while(position>2*M_PI){
         //     position-=2*M_PI;
         // }
@@ -1073,14 +1086,14 @@ outputFile.save (fileName);
     PitchFine,
     SampleGain,
     Drive,
-    AutoCalculate;
+    Freeze;
     int Octave, CsvRadiusIndex, CsvArgumentIndex;
         std::vector<float> waveform;
         int waveformLength,safeWaveformLength;
-                int position;
+                uint64_t position;
         int frame;
         int sampleLength, SampleOffset;
-    bool ready;
+    bool ready=false, paramUpdated=true;
 
 AudioFile<float> audioFile;
 
