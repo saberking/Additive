@@ -19,12 +19,13 @@ START_NAMESPACE_DISTRHO
 enum MyFileTypes{
     noFileType,
     wavFileType,
-    csvFileType
+    csvFileType,
+    fileTypeCount
 };
   
 class Additive : public Plugin {
     public:
-        Additive() : Plugin(kParameterCount, 0, 0), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
+        Additive() : Plugin(kParameterCount, 0, 1), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
             sampleLength=0;
             ready=false;
 
@@ -769,36 +770,90 @@ calculate();
                 if(paramUpdated&&Freeze<1&&index!=kGain) calculate(index);
 
     }
-    void setState(const char *key, const char *value){
-        if(strcmp(key, "ui_plugin_load_sample")==0){
-            std::cout<<"Sample loaded: "<<value<<"\n\n";
-            if(value[strlen(value)-4]=='.'&&value[strlen(value)-3]=='c'&&value[strlen(value)-2]=='s'&&value[strlen(value)-1]=='v'){
-                fileType=csvFileType;
+    int determineFileType(const char *value){
+        if(value[strlen(value)-4]=='.'&&value[strlen(value)-3]=='c'&&value[strlen(value)-2]=='s'&&value[strlen(value)-1]=='v'){
+            return csvFileType;
+        }else if(value[strlen(value)-4]=='.'&&value[strlen(value)-3]=='w'&&value[strlen(value)-2]=='a'&&value[strlen(value)-1]=='v'){
+            return wavFileType;
+        }else{
+            return noFileType;
+        }
+    }
+    bool loadFile(const char *value){
+        int fileType=determineFileType(value);
+        switch(fileType){
+            case wavFileType:
+                loadWavFile(value);
+                return true;
+                break;
+            case csvFileType:
                 parseCsv(value);
-            }else{
-                fileType=wavFileType;
-                            audioFile.load (value);
+                return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+
+    }
+    void loadWavFile(const char *value){
+        audioFile.load (value);
                 //intAudioFile.load(value);
                 int numChannels = audioFile.getNumChannels();
                 if( numChannels==2){
                 sampleLength = audioFile.getNumSamplesPerChannel();
                 csvRadius=audioFile.samples[0];
                 csvArgument=audioFile.samples[1];
-
                 }
-                else{
-                    sampleLength=0;
-                }
+    }
+    void setState(const char *key, const char *value){
+        if(strcmp(key, "ui_plugin_sample_filepath")==0){
+            std::cout<<"about toload: "<<value<<"\n\n";
+            if(!loadFile(value))sampleLength=0;
+            else{
+                filePath=value;
             }
 
             std::cout<<"state set!!!"<<"\n\n";
         }else if(strcmp(key, "calculate")==0){
             std::cout<<"calculatebuttonpressed"<<"\n\n";
+                    calculate();
+
         }else if(strcmp(key, "ui_plugin_save_sample")==0){
             saveSample(value);
         }
-        calculate();
     }
+String getState(const char *key) const override
+{
+    String retString = String("undefined state");
+
+std::cout<<"getstate"<<retString<<"\n\n";
+    if (strcmp(key, "ui_plugin_sample_filepath") == 0)
+    {
+        retString = filePath.c_str();
+        std::cout<<"getstate"<<retString<<"\n\n";
+    }
+    if (strcmp(key, "ui_sample_loaded") == 0)
+    {
+        retString = "ui_sample_loaded yes/no";
+    }
+    return retString;
+};
+void initState(unsigned int index, String &stateKey, String &defaultStateValue) override
+{
+    switch (index)
+    {
+    case 0:
+        stateKey = "ui_plugin_sample_filepath";
+        defaultStateValue = "";
+        break;
+
+    default:
+
+        break;
+    }
+}
+
     void parseCsv(const char *value){
         sampleLength=0;
         csvRadius.resize(0);
@@ -1094,12 +1149,13 @@ outputFile.save (fileName);
         int frame;
         int sampleLength, SampleOffset;
     bool ready=false, paramUpdated=true;
+    std::string filePath; 
 
 AudioFile<float> audioFile;
 
 //AudioFile<int> intAudioFile;
 std::vector<float> csvRadius, csvArgument;
-int fileType=noFileType;
+
 
         DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Additive);
 };

@@ -23,7 +23,7 @@
 #define DISTRHO_UI_USE_CUSTOM 1
 
 #define DISTRHO_UI_CUSTOM_INCLUDE_PATH "DearImGui.hpp"
-
+#define DISTRHO_PLUGIN_WANT_DIRECT_ACCESS 0
 /**
  T he top-level-widget typedef to use for the custom toolkit.          *
  This widget class MUST be a subclass of DGL TopLevelWindow class.
@@ -33,9 +33,9 @@ and define widget type as e.g. DGL_NAMESPACE::MyCustomTopLevelWidget.
 */
 #define DISTRHO_UI_CUSTOM_WIDGET_TYPE DGL_NAMESPACE::ImGuiTopLevelWidget
 
-#define DISTRHO_UI_DEFAULT_WIDTH 1200
+#define DISTRHO_UI_DEFAULT_WIDTH 600
 
-#define DISTRHO_UI_DEFAULT_HEIGHT 600
+#define DISTRHO_UI_DEFAULT_HEIGHT 400
 
 #define DISTRHO_UI_USE_NANOVG 0
 
@@ -105,7 +105,7 @@ and define widget type as e.g. DGL_NAMESPACE::MyCustomTopLevelWidget.
  - surround
  - ambisonic
  */
-#define DISTRHO_PLUGIN_CLAP_FEATURES "audio-effect", "stereo"
+#define DISTRHO_PLUGIN_CLAP_FEATURES "mono"
 
 
 enum Parameters {

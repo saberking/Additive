@@ -15,68 +15,6 @@ namespace bar{
 START_NAMESPACE_DISTRHO
 #define DEBUG 0
 
-const char *parameterName[kParameterCount] ={
-"Gain",
-    "Volume24hz",
-    "Phase24hz",
-    "Volume25hz",
-        "Phase25hz",
-
-    "Volume26hz",
-    "Phase26hz",
-    "Volume27hz",
-    "Phase27hz",
-    "Volume28hz",
-    "Phase28hz",
-    "Volume29hz",
-    "Phase29hz",
-    "Volume30hz",
-     "Phase30hz",
-   "Volume31hz",
-     "Phase31hz",
-   "Volume32hz",
-      "Phase32hz",
-  "Volume33hz",
-     "Phase33hz",
-   "Volume34hz",
-      "Phase34hz",
-  "Volume35hz",
-      "Phase35hz",
-  "Volume36hz",
-      "Phase36hz",
-  "Volume37hz",
-     "Phase37hz",
-   "Volume38hz",
-     "Phase38hz",
-   "Volume39hz",
-     "Phase39hz",
-   "Volume40hz",
-     "Phase40hz",
-   "Volume41hz",
-      "Phase41hz",
-  "Volume42hz",
-     "Phase42hz",
-   "Volume43hz",
-     "Phase43hz",
-   "Volume44hz",
-       "Phase44hz",
- "Volume45hz",
-     "Phase45hz",
-   "Volume46hz",
-     "Phase46hz",
-   "Volume47hz",
-    "Phase47hz",
-    "Octave",
-    "PitchCoarse",
-    "PitchFine",
-    "SampleOffset",
-    "SampleGain",
-    "Drive",
-        "Freeze",
-    "CSVRadiusIndex",
-    "CSVArgumentIndex"
-
-};
 // --------------------------------------------------------------------------------------------------------------------
 
 class AdditiveUI : public UI
@@ -148,7 +86,12 @@ protected:
    /**
       ImGui specific onDisplay function.
     */
-    void stateChanged(const char* key, const char * value){}
+    void stateChanged(const char* key, const char * value){
+        if(strcmp(key, "ui_plugin_sample_filepath")==0){
+            std::cout<<"loading from save "<<value<<"\n\n";
+           strcpy(fInputFilePathName, value);
+        }
+    }
     void onImGuiDisplay() override
     {
         if(DEBUG)std::cout<<"GUIDISPLAY"<<"\n\n";
@@ -194,7 +137,7 @@ protected:
             //         std::cout<<"\n\n";
             //         std::cout<<fInputFilePathName; 
             //                                 std::cout<<"\n\n"<<"Setting State"<<"\n\n"<<fInputFilePathName<<"\n\n";    
-            //                                 setState( "ui_plugin_load_sample", fInputFilePathName.c_str());    
+            //                                 setState( "ui_plugin_sample_filepath", fInputFilePathName.c_str());    
             //         // action
             //     }
                 
@@ -221,7 +164,7 @@ protected:
             }
             ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
             if (ImGui::Button("load")) {   
-                setState("ui_plugin_load_sample",fInputFilePathName);
+                setState("ui_plugin_sample_filepath",fInputFilePathName);
             }
             ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
             if (ImGui::Button("save")) {   
