@@ -815,7 +815,7 @@ calculate();
             }
 
             std::cout<<"state set!!!"<<"\n\n";
-        }else if(strcmp(key, "calculate")==0){
+        }else if(strcmp(key, "ui_plugin_calculate")==0){
             std::cout<<"calculatebuttonpressed"<<"\n\n";
                     calculate();
 
