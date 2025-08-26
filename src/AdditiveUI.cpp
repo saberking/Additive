@@ -206,7 +206,7 @@ protected:
                 start = 0.0f;
                 end=2.0f;
                 if(i==kOctave){
-                                addSlider(i, -6, 6);
+                                addSlider(i, -10, 10);
                 }else if(i==kPitchCoarse){
                     addSlider(i, 0, 48);
                 }else if(i==kPitchFine){

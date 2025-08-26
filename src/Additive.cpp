@@ -8,7 +8,7 @@
 #define DEBUG 0
 
 #define sampleRate 48000
-#define maxWaveformLength 3072000
+#define maxWaveformLength 6144000
 namespace foo{
 #include "parameterNames.hpp"
 }
@@ -457,8 +457,8 @@ calculate();
             case kOctave:
                 parameter.symbol = "Octave";
                 parameter.ranges.def = 0;
-                parameter.ranges.min = -6;
-                parameter.ranges.max = 6;
+                parameter.ranges.min = -10;
+                parameter.ranges.max = 10;
                 parameter.hints=kParameterIsAutomatable;
                 break;
             case kPitchCoarse:
