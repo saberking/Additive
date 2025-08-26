@@ -784,10 +784,12 @@ calculate();
         switch(fileType){
             case wavFileType:
                 loadWavFile(value);
+                calculate();
                 return true;
                 break;
             case csvFileType:
                 parseCsv(value);
+                calculate();
                 return true;
                 break;
             default:
