@@ -13,7 +13,7 @@ project(${NAME})
 add_subdirectory(dpf)
 
 dpf_add_plugin(${NAME}
-  TARGETS clap vst3 jack
+  TARGETS vst3 jack
   FILES_DSP
       src/Additive.cpp
   FILES_UI
