@@ -25,7 +25,9 @@ enum MyFileTypes{
   
 class Additive : public Plugin {
     public:
-        Additive() : Plugin(kParameterCount, 0, 1), Gain(0.0f) {position=frame=0; waveformLength=sampleRate;
+        Additive() : Plugin(kParameterCount, 0, 1), Gain(0.0f) {
+            position=envelopePosition=0; 
+            waveformLength=sampleRate;
             sampleLength=0;
             ready=false;
 
@@ -944,7 +946,10 @@ outputFile.save (fileName);
                 if (DEBUG) std::cout<<maxWaveformLength<<"\n\n";
 
         int newWaveformLength=std::min<int>(sampleRate/pitch, maxWaveformLength);
-        if(waveformLength)position=position*newWaveformLength/waveformLength;
+        if(waveformLength){
+            int temp_multiplier=newWaveformLength/waveformLength;
+            position=position*temp_multiplier;
+        }
         waveformLength=newWaveformLength;
         position=position%waveformLength;
         if(DEBUG)std::cout<<waveformLength<<"\n\n";
@@ -1056,7 +1061,34 @@ outputFile.save (fileName);
             paramUpdated=false;
             std::cout<<"baz"<<"\n\n";
     }
-       void run(const float **inputs, float **outputs, uint32_t frames) override {
+    void noteOn(int midi_data1, int midi_data2){
+        position=0;
+        envelopePosition=0;
+        envelopeStage=1;
+    }
+    void noteOff(int midi_data1, int midi_data2){
+        envelopePosition=0;
+        envelopeStage=2;
+    }
+
+    float envelope(){
+        if(envelopeStage==1){
+            if (envelopePosition>24000){
+                return 0.5f;
+            }else if(envelopePosition<4800){
+                return (float) (envelopePosition/4800);
+            }else{
+                return (float) 1 - (envelopePosition-4800)*0.5/19200;
+            }
+        }else{
+            return 0.5*(1-std::min<float>(envelopePosition,9600)/9600);
+        }
+    }
+
+    void run(const float **inputs, float **outputs, uint32_t frames,
+            const MidiEvent *midiEvents, // MIDI pointer
+            uint32_t midiEventCount      // Number of MIDI events in block
+        ) override {
         const float *const in = inputs[0];
         float *const out = outputs[0];
         //out[0]=(fmod(pow(0.5,0.5)+position*M_PI,2)-1)*gain;
@@ -1066,17 +1098,45 @@ outputFile.save (fileName);
         if(DEBUG)std::cout<<"running"<<"\n\n";
 
         int minlength=std::min(waveformLength,safeWaveformLength);
-
+        int curEventIndex =0;
         for (uint32_t i = 0; i < frames; i++) {
+            while (curEventIndex < midiEventCount && i == midiEvents[curEventIndex].frame)
+            {
 
+                int status = midiEvents[curEventIndex].data[0]; // midi status
+                                                                //  int channel = status & 0x0F ; // get midi channel
+                int midi_message = status & 0xF0;
+                int midi_data1 = midiEvents[curEventIndex].data[1];
+                int midi_data2 = midiEvents[curEventIndex].data[2];
+                #ifdef DEBUG
+                printf("midi note %i\n", midi_data1);
+                #endif
+
+
+                switch (midi_message)
+                {
+                case 0x80: // note_off
+                    noteOff(midi_data1, midi_data2);
+                    break;
+                case 0x90: // note_on
+                    noteOn(midi_data1, midi_data2);
+                    break;
+                default:
+                    break;
+                }
+                curEventIndex++;
+
+            }
             out[i]=0.0f;
             if(DEBUG)std::cout<<"initialised output"<<"\n\n";
             if(ready){
                 position=position%minlength;
                 if(DEBUG)std::cout<<"position"<<position<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
-                out[i]=waveform[position]*Gain;
+                out[i]=waveform[position]*Gain*envelope();
 
                 position+=1;
+                envelopePosition+=1;
+
                 if(DEBUG)std::cout<<"addedropos"<<"\n\n";
             }
             //position+=1;
@@ -1087,7 +1147,6 @@ outputFile.save (fileName);
         // while(position>2*M_PI){
         //     position-=2*M_PI;
         // }
-        frame++;
     }
     private:
         float Gain,
@@ -1147,9 +1206,8 @@ outputFile.save (fileName);
     int Octave, CsvRadiusIndex, CsvArgumentIndex;
         std::vector<float> waveform;
         int waveformLength,safeWaveformLength;
-                uint64_t position;
-        int frame;
-        int sampleLength, SampleOffset;
+                uint64_t position, envelopePosition;
+        int sampleLength, SampleOffset, envelopeStage;
     bool ready=false, paramUpdated=true;
     std::string filePath; 
 

@@ -4,7 +4,7 @@
 #define DISTRHO_PLUGIN_NAME  "Additive"
 #define DISTRHO_PLUGIN_URI   "https://github.com/saberking/Additive"
 
-#define DISTRHO_PLUGIN_NUM_INPUTS   16
+#define DISTRHO_PLUGIN_NUM_INPUTS   2
 #define DISTRHO_PLUGIN_NUM_OUTPUTS  1
 #define DISTRHO_PLUGIN_IS_RT_SAFE   1
 
@@ -106,6 +106,8 @@ and define widget type as e.g. DGL_NAMESPACE::MyCustomTopLevelWidget.
  - ambisonic
  */
 #define DISTRHO_PLUGIN_CLAP_FEATURES "mono"
+#define DISTRHO_PLUGIN_IS_SYNTH 1
+#define DISTRHO_PLUGIN_WANT_MIDI_INPUT 1
 
 
 enum Parameters {
