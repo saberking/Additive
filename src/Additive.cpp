@@ -26,7 +26,7 @@ enum MyFileTypes{
 class Additive : public Plugin {
     public:
         Additive() : Plugin(kParameterCount, 0, 1), Gain(0.0f) {
-            position=envelopePosition=0; 
+            position=envelopePosition=floatPosition=0; 
             waveformLength=sampleRate;
             sampleLength=0;
             ready=false;
@@ -999,10 +999,10 @@ outputFile.save (fileName);
         int newWaveformLength=std::min<int>(sampleRate/pitch, maxWaveformLength);
         if(waveformLength){
             int temp_multiplier=newWaveformLength/waveformLength;
-            position=position*temp_multiplier;
+            floatPosition=floatPosition*temp_multiplier;
         }
         waveformLength=newWaveformLength;
-        position=position%waveformLength;
+        floatPosition=fmod(floatPosition, waveformLength);
         if(DEBUG)std::cout<<waveformLength<<"\n\n";
         std::vector<std::complex<float>> data_out(waveformLength);
         std::vector<std::complex<float>> data_in(waveformLength);
@@ -1112,12 +1112,12 @@ outputFile.save (fileName);
             paramUpdated=false;
             std::cout<<"baz"<<"\n\n";
     }
-    void noteOn(int midi_data1, int midi_data2){
-        position=0;
+    void noteOn(){
+        floatPosition=0;
         envelopePosition=0;
         envelopeStage=1;
     }
-    void noteOff(int midi_data1, int midi_data2){
+    void noteOff(){
         envelopePosition=std::min<int>(envelopePosition,Attack+Decay);
         envelopeStage=2;
     }
@@ -1166,6 +1166,7 @@ outputFile.save (fileName);
                 int midi_message = status & 0xF0;
                 int midi_data1 = midiEvents[curEventIndex].data[1];
                 int midi_data2 = midiEvents[curEventIndex].data[2];
+                midiNote=midi_data1;
                 #ifdef DEBUG
                 printf("midi note %i\n", midi_data1);
                 #endif
@@ -1174,10 +1175,10 @@ outputFile.save (fileName);
                 switch (midi_message)
                 {
                 case 0x80: // note_off
-                    noteOff(midi_data1, midi_data2);
+                    noteOff();
                     break;
                 case 0x90: // note_on
-                    noteOn(midi_data1, midi_data2);
+                    noteOn();
                     break;
                 default:
                     break;
@@ -1188,11 +1189,13 @@ outputFile.save (fileName);
             out[i]=0.0f;
             if(DEBUG)std::cout<<"initialised output"<<"\n\n";
             if(ready){
-                position=position%minlength;
-                if(DEBUG)std::cout<<"position"<<position<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
-                out[i]=waveform[position]*Gain*envelope();
+        float positionIncrement=pow(2,(float)(midiNote-60)/12);
 
-                position+=1;
+                floatPosition=fmod(floatPosition,minlength);
+                if(DEBUG)std::cout<<"floatposition"<<floatPosition<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
+                out[i]=waveform[(int)floatPosition]*Gain*envelope();
+
+                floatPosition+=positionIncrement;
                 envelopePosition+=1;
 
                 if(DEBUG)std::cout<<"addedropos"<<"\n\n";
@@ -1270,8 +1273,11 @@ outputFile.save (fileName);
         int sampleLength, SampleOffset, envelopeStage;
     bool ready=false, paramUpdated=true;
     std::string filePath; 
+    int midiNote=60;
 
 AudioFile<float> audioFile;
+
+float floatPosition;
 
 //AudioFile<int> intAudioFile;
 std::vector<float> csvRadius, csvArgument;
