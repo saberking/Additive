@@ -17,3 +17,15 @@ dpf/
 dpf-widgets/
 
 win/
+
+bin/
+
+win/*
+
+bin/*
+
+win
+
+bin
+
+/win/

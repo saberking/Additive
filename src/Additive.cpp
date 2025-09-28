@@ -92,6 +92,11 @@ class Additive : public Plugin {
     Freeze=0;
    CsvRadiusIndex=0; 
    CsvArgumentIndex=0;
+    Attack=0;
+    Decay=0;
+    Sustain=0.0f;
+    Release=0;
+    envelopeStage=2;
 calculate();
         }
     protected:
@@ -517,6 +522,30 @@ calculate();
                 parameter.ranges.min = 0;
                 parameter.ranges.max =31;
                 break;
+            case kAttack:
+                parameter.symbol = "Attack";
+                parameter.ranges.def = 4800;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =48000;
+                break;
+                        case kDecay:
+                parameter.symbol = "Decay";
+                parameter.ranges.def = 4800;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =48000;
+                break;
+                        case kSustain:
+                parameter.symbol = "Sustain";
+                parameter.ranges.def = 0.5f;
+                parameter.ranges.min = 0.0f;
+                parameter.ranges.max =2.0f;
+                break;
+                            case kRelease:
+                parameter.symbol = "Release";
+                parameter.ranges.def = 4800;
+                parameter.ranges.min = 0;
+                parameter.ranges.max =48000;
+                break;
         }
                         parameter.name = foo::getParameterName(index);
 
@@ -642,6 +671,14 @@ calculate();
             return CsvRadiusIndex;
         case kCsvArgumentIndex:
             return CsvArgumentIndex;
+        case kAttack:
+            return Attack;
+        case kDecay:
+            return Decay;
+        case kSustain:
+            return Sustain;
+        case kRelease:
+            return Release;
         }
 
     }
@@ -766,6 +803,16 @@ calculate();
             CsvRadiusIndex=(int)value;break;
         case kCsvArgumentIndex:
             CsvArgumentIndex=(int)value;break;
+        case kAttack:
+            Attack=(int)value;break;
+        case kDecay:
+            Decay=(int)value;break;
+        case kSustain:
+            Sustain=value;
+            break;
+        case kRelease:
+            Release=(int)value;
+            break;
         }
         if(DEBUG)std::cout<<"Param updated"<<Freeze<<"\n"<<index<<"    "<<value<<"\n"<<kFreeze<<"should"<<"\n";
         paramUpdated=true;
@@ -1067,22 +1114,29 @@ outputFile.save (fileName);
         envelopeStage=1;
     }
     void noteOff(int midi_data1, int midi_data2){
-        envelopePosition=0;
+        envelopePosition=std::min<int>(envelopePosition,Attack+Decay);
         envelopeStage=2;
     }
-
+    float attackCurve(float x){
+        return x;
+    }
+    float decayCurve(float x){
+        return x;
+    }
+    float releaseCurve(float x){
+        return x;
+    }
     float envelope(){
-        if(envelopeStage==1){
-            if (envelopePosition>24000){
-                return 0.5f;
-            }else if(envelopePosition<4800){
-                return (float) (envelopePosition/4800);
-            }else{
-                return (float) 1 - (envelopePosition-4800)*0.5/19200;
-            }
-        }else{
-            return 0.5*(1-std::min<float>(envelopePosition,9600)/9600);
-        }
+        if(envelopePosition<Attack){
+            return attackCurve((float) envelopePosition/Attack);
+        }else if(envelopePosition<Attack+Decay){
+            return decayCurve((float)1 - (envelopePosition-Attack)*(1-Sustain)/Decay);
+        }else if(envelopeStage==1){
+            return Sustain;
+        }else if (Release>=1){
+
+            return releaseCurve((float) Sustain*(1-(float) std::min<int>(envelopePosition-Attack-Decay,Release)/Release));
+        }else return 0;
     }
 
     void run(const float **inputs, float **outputs, uint32_t frames,
@@ -1204,6 +1258,8 @@ outputFile.save (fileName);
     Drive,
     Freeze;
     int Octave, CsvRadiusIndex, CsvArgumentIndex;
+    float Sustain;
+    int Attack, Decay, Release;
         std::vector<float> waveform;
         int waveformLength,safeWaveformLength;
                 uint64_t position, envelopePosition;

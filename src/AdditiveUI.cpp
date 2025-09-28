@@ -154,6 +154,8 @@ protected:
                     addSlider(i, 0, 48);
                 }else if(i==kPitchFine){
                     addSlider(i, 0, 12);
+                }else if(i==kAttack||i==kDecay||i==kRelease){
+                    addSlider(i, 0, 48000);
                 }
                 else addSlider(i, start, end);
             }

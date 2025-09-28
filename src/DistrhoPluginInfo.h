@@ -171,7 +171,12 @@ enum Parameters {
     kFreeze,
     kCsvRadiusIndex,
     kCsvArgumentIndex,
-    kParameterCount
+    kAttack,
+    kDecay,
+    kSustain,
+    kRelease,
+        kParameterCount
+
 };
 
 #endif

@@ -181,6 +181,18 @@
                                         case kCsvArgumentIndex:
                 return "CSVArgumentIndex";
                 break;
+            case kAttack:
+                return "Attack";
+                break;
+            case kDecay:
+                return "Decay";
+                break;
+            case kSustain:
+                return "Sustain";
+                break;
+            case kRelease:
+                return "Release";
+                break;
         }
         return "error";
     }
