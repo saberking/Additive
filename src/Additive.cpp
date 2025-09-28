@@ -852,9 +852,13 @@ calculate();
                 //intAudioFile.load(value);
                 int numChannels = audioFile.getNumChannels();
                 if( numChannels==2){
-                sampleLength = audioFile.getNumSamplesPerChannel();
-                csvRadius=audioFile.samples[0];
-                csvArgument=audioFile.samples[1];
+                    sampleLength = audioFile.getNumSamplesPerChannel();
+                    csvRadius=audioFile.samples[0];
+                    csvArgument=audioFile.samples[1];
+                }else if(numChannels==1){
+                    sampleLength = audioFile.getNumSamplesPerChannel();
+                    csvRadius=audioFile.samples[0];
+                    csvArgument=audioFile.samples[0];
                 }
     }
     void setState(const char *key, const char *value){
