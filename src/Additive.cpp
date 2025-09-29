@@ -1179,6 +1179,7 @@ outputFile.save (fileName);
                     break;
                 case 0x90: // note_on
                     noteOn();
+                    velocity=midi_data2;
                     break;
                 default:
                     break;
@@ -1193,7 +1194,8 @@ outputFile.save (fileName);
 
                 floatPosition=fmod(floatPosition,minlength);
                 if(DEBUG)std::cout<<"floatposition"<<floatPosition<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
-                out[i]=waveform[(int)floatPosition]*Gain*envelope();
+                float mult=((float)velocity)/127.0f;
+                out[i]=waveform[(int)floatPosition]*Gain*envelope()*mult;
 
                 floatPosition+=positionIncrement;
                 envelopePosition+=1;
@@ -1274,6 +1276,7 @@ outputFile.save (fileName);
     bool ready=false, paramUpdated=true;
     std::string filePath; 
     int midiNote=60;
+    int velocity=0;
 
 AudioFile<float> audioFile;
 
