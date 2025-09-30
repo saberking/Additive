@@ -99,7 +99,8 @@ protected:
         const float width = getWidth();
         const float height = getHeight();
         const float margin = 20.0f * getScaleFactor();
-
+                            start = 0.0f;
+                    end=2.0f;
         ImGui::SetNextWindowPos(ImVec2(margin, margin));
         ImGui::SetNextWindowSize(ImVec2(width - 2 * margin, height - 2 * margin));
 
@@ -144,40 +145,54 @@ protected:
             //     // close
             //     ImGuiFileDialog::Instance()->Close();
             // }
+            addSlider(kGain, 0, 2);
+            addSlider(kDrive, 0, 2);
             if (ImGui::CollapsingHeader("Partials"))
             {
+                ImGui::Indent();
                 for(int i=0;i<kParameterCount;i++){
-                    start = 0.0f;
-                    end=2.0f;
+;
                     if(i==kOctave){
                     }else if(i==kPitchCoarse){
                     }else if(i==kPitchFine){
-                    }else if(i==kAttack||i==kDecay||i==kRelease){
+                    }else if(i==kAttack||i==kDecay||i==kRelease||i==kGain||i==kSampleGain||i==kSampleOffset||i==kFreeze||i==kDrive||i==kCsvArgumentIndex||i==kCsvRadiusIndex||i==kSustain){
                     }
                     else addSlider(i, start, end);
                 }
+                ImGui::Unindent();
             }
 
+            if(ImGui::CollapsingHeader("Freeze waveform")){
+                if (ImGui::Button("calculate")) {   
+                    setState("ui_plugin_calculate","foo");
+                }
+                addSlider(kFreeze, 0.0f, 1.0f);
+            }
+            if(ImGui::CollapsingHeader("Import wav/CSV")){
+                ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
+                if (ImGui::Button("import")) {   
+                    setState("ui_plugin_sample_filepath",fInputFilePathName);
+                }
+                addSlider(kSampleGain, 0, 2);
+                addSlider(kSampleOffset, 0, 1000);
+                addSlider(kCsvRadiusIndex, 0, 31);
+                addSlider(kCsvArgumentIndex, 0, 31);
+            }
+            if(ImGui::CollapsingHeader("Export wav")){
 
-            if (ImGui::Button("calculate")) {   
-                setState("ui_plugin_calculate","foo");
-            }
-            ImGui::InputTextMultiline("Input filepath", fInputFilePathName, sizeof(fInputFilePathName));
-            if (ImGui::Button("load")) {   
-                setState("ui_plugin_sample_filepath",fInputFilePathName);
-            }
-            ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
-            if (ImGui::Button("save")) {   
-                setState("ui_plugin_save_sample",fOutputFilePathName);
+                ImGui::InputTextMultiline("Output filepath", fOutputFilePathName, sizeof(fOutputFilePathName));
+                if (ImGui::Button("export")) {   
+                    setState("ui_plugin_save_sample",fOutputFilePathName);
+                }
             }
             if (ImGui::CollapsingHeader("Envelope"))
             {
-                for(int i=0;i<kParameterCount;i++){
-                    if(i==kAttack||i==kDecay||i==kRelease){
-                        addSlider(i, 0, 48000);
-                    }
 
-                }
+                addSlider(kAttack, 0, 48000);
+                addSlider(kDecay, 0, 48000);
+                addSlider(kSustain, 0, 2);
+                                addSlider(kRelease, 0, 48000);
+
             }
 
             if (ImGui::CollapsingHeader("Pitch"))
