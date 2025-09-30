@@ -103,7 +103,7 @@ protected:
         ImGui::SetNextWindowPos(ImVec2(margin, margin));
         ImGui::SetNextWindowSize(ImVec2(width - 2 * margin, height - 2 * margin));
 
-        if (ImGui::Begin("Simple gain", nullptr, ImGuiWindowFlags_NoResize))
+        if (ImGui::Begin("Additive", nullptr, ImGuiWindowFlags_NoResize))
         {
             
 
@@ -144,23 +144,21 @@ protected:
             //     // close
             //     ImGuiFileDialog::Instance()->Close();
             // }
-
-            for(int i=0;i<kParameterCount;i++){
-                start = 0.0f;
-                end=2.0f;
-                if(i==kOctave){
-                                addSlider(i, -10, 10);
-                }else if(i==kPitchCoarse){
-                    addSlider(i, 0, 48);
-                }else if(i==kPitchFine){
-                    addSlider(i, 0, 12);
-                }else if(i==kAttack||i==kDecay||i==kRelease){
-                    addSlider(i, 0, 48000);
+            if (ImGui::CollapsingHeader("Partials"))
+            {
+                for(int i=0;i<kParameterCount;i++){
+                    start = 0.0f;
+                    end=2.0f;
+                    if(i==kOctave){
+                    }else if(i==kPitchCoarse){
+                    }else if(i==kPitchFine){
+                    }else if(i==kAttack||i==kDecay||i==kRelease){
+                    }
+                    else addSlider(i, start, end);
                 }
-                else addSlider(i, start, end);
             }
-            static char aboutText[256] = "This is a demo plugin made with ImGui.\n";
-           // ImGui::InputTextMultiline("About", aboutText, sizeof(aboutText));
+
+
             if (ImGui::Button("calculate")) {   
                 setState("ui_plugin_calculate","foo");
             }
@@ -172,9 +170,35 @@ protected:
             if (ImGui::Button("save")) {   
                 setState("ui_plugin_save_sample",fOutputFilePathName);
             }
-          //  }
+            if (ImGui::CollapsingHeader("Envelope"))
+            {
+                for(int i=0;i<kParameterCount;i++){
+                    if(i==kAttack||i==kDecay||i==kRelease){
+                        addSlider(i, 0, 48000);
+                    }
+
+                }
+            }
+
+            if (ImGui::CollapsingHeader("Pitch"))
+            {
+                for(int i=0;i<kParameterCount;i++){
+                    if(i==kOctave){
+                                    addSlider(i, -10, 10);
+                    }else if(i==kPitchCoarse){
+                        addSlider(i, 0, 48);
+                    }else if(i==kPitchFine){
+                        addSlider(i, 0, 12);
+                    }
+
+                }
+            }
         }
-        ImGui::End();
+                ImGui::End();
+
+
+
+        
                 if(DEBUG)std::cout<<"GUIDISPLAYfinished"<<"\n\n";
     }
     private:
