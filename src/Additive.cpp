@@ -121,7 +121,7 @@ calculate();
         switch (index) {
             case kGain:
                 parameter.symbol = "Gain";
-                parameter.ranges.def = 0.0f;
+                parameter.ranges.def = 1.0f;
                 parameter.ranges.min = 0.0f;
                 parameter.ranges.max = 2.0f;
                 parameter.hints=kParameterIsAutomatable;
@@ -527,24 +527,31 @@ calculate();
                 parameter.ranges.def = 4800;
                 parameter.ranges.min = 0;
                 parameter.ranges.max =48000;
+                parameter.hints=kParameterIsAutomatable;
                 break;
                         case kDecay:
                 parameter.symbol = "Decay";
                 parameter.ranges.def = 4800;
                 parameter.ranges.min = 0;
                 parameter.ranges.max =48000;
+                                parameter.hints=kParameterIsAutomatable;
+
                 break;
                         case kSustain:
                 parameter.symbol = "Sustain";
                 parameter.ranges.def = 0.5f;
                 parameter.ranges.min = 0.0f;
                 parameter.ranges.max =2.0f;
+                                parameter.hints=kParameterIsAutomatable;
+
                 break;
                             case kRelease:
                 parameter.symbol = "Release";
                 parameter.ranges.def = 4800;
                 parameter.ranges.min = 0;
                 parameter.ranges.max =48000;
+                                parameter.hints=kParameterIsAutomatable;
+
                 break;
         }
                         parameter.name = foo::getParameterName(index);
