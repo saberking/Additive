@@ -1,6 +1,7 @@
 # build target dir
 /bin/
-
+/nonexistenfolder/
+/build/
 # cmake temp files that remain around
 CMakeFiles/
 cmake_install.cmake
@@ -13,19 +14,4 @@ Makefile
 _dpf_empty.c
 lv2_ttl_generator
 
-dpf/
-dpf-widgets/
 
-win/
-
-bin/
-
-win/*
-
-bin/*
-
-win
-
-bin
-
-/win/
