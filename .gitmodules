@@ -6,4 +6,4 @@
 	url = https://github.com/DISTRHO/DPF-Widgets.git
 [submodule "ImGuiFileDialog"]
 	path = ImGuiFileDialog
-	url = https://github.com/aiekick/ImGuiFileDialog
+	url = https://github.com/aiekick/ImGuiFileDialog.git
