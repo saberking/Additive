@@ -868,7 +868,7 @@ calculate();
                     csvArgument=audioFile.samples[0];
                 }
     }
-    void setState(const char *key, const char *value){
+    void setState  (const char *key, const char *value) override {
         if(strcmp(key, "ui_plugin_sample_filepath")==0){
             std::cout<<"about toload: "<<value<<"\n\n";
             if(!loadFile(value))sampleLength=0;
@@ -953,32 +953,32 @@ void initState(unsigned int index, String &stateKey, String &defaultStateValue) 
         calculate();
         AudioFile<float> outputFile;
         // 1. Create an AudioBuffer
-// (BTW, AudioBuffer is just a vector of vectors)
+        // (BTW, AudioBuffer is just a vector of vectors)
 
-AudioFile<float>::AudioBuffer buffer;
+        AudioFile<float>::AudioBuffer buffer;
 
-// 2. Set to (e.g.) two channels
-buffer.resize (1);
-std::cout<<"bufffer resized"<<"\n";
-// 3. Set number of samples per channel
-buffer[0].resize (waveformLength);
-std::cout<<"bufffer resized"<<"\n";
-buffer[0]=waveform;
+        // 2. Set to (e.g.) two channels
+        buffer.resize (1);
+        std::cout<<"bufffer resized"<<"\n";
+        // 3. Set number of samples per channel
+        buffer[0].resize (waveformLength);
+        std::cout<<"bufffer resized"<<"\n";
+        buffer[0]=waveform;
 
-bool ok = outputFile.setAudioBuffer (buffer);
-if(ok){
-outputFile.setAudioBufferSize (1, waveformLength);
-std::cout<<"audipo resized"<<"\n";
+        bool ok = outputFile.setAudioBuffer (buffer);
+        if(ok){
+        outputFile.setAudioBufferSize (1, waveformLength);
+        std::cout<<"audipo resized"<<"\n";
 
-outputFile.setBitDepth (16);
-std::cout<<"bitdept resized"<<"\n";
-outputFile.setSampleRate (48000);
-std::cout<<"saplerateresized"<<fileName<<"\n";
+        outputFile.setBitDepth (16);
+        std::cout<<"bitdept resized"<<"\n";
+        outputFile.setSampleRate (48000);
+        std::cout<<"saplerateresized"<<fileName<<"\n";
 
-outputFile.save (fileName);
-}else{
-    std::cout<<"error!!!!!!!"<<"\n";
-}
+        outputFile.save (fileName);
+        }else{
+            std::cout<<"error!!!!!!!"<<"\n";
+        }
 
     }
 
@@ -1098,7 +1098,6 @@ outputFile.save (fileName);
             //     data_in[i]*=recip*(Drive+1);//100
             //   }
 
-            std::cout<<"foo";
             pocketfft::c2c(
                 shape_in,
                 stride_in,
@@ -1109,7 +1108,6 @@ outputFile.save (fileName);
                                     data_out.data(),
                                     fct
             );
-            std::cout<<"bar";
             for(int i=0;i<waveformLength;i++){
                 waveform[i]=clamp(data_out[i].real());
                 //waveform[i]=0;
@@ -1117,7 +1115,7 @@ outputFile.save (fileName);
             safeWaveformLength=waveformLength;
             ready=true;
             paramUpdated=false;
-            std::cout<<"baz"<<"\n\n";
+            if(DEBUG) std::cout<<"baz"<<"\n\n";
     }
     void noteOn(){
         floatPosition=0;
@@ -1160,7 +1158,7 @@ outputFile.save (fileName);
         // for(int i=0;i<waveformLength;i++){
         //     waveform[i]=sin(2*M_PI  *i*PitchRange/800);
         // }
-        if(DEBUG)std::cout<<"running"<<"\n\n";
+        //if(DEBUG)std::cout<<"running"<<"\n\n";
 
         int minlength=std::min(waveformLength,safeWaveformLength);
         int curEventIndex =0;
@@ -1195,25 +1193,23 @@ outputFile.save (fileName);
 
             }
             out[i]=0.0f;
-            if(DEBUG)std::cout<<"initialised output"<<"\n\n";
             if(ready){
         float positionIncrement=pow(2,(float)(midiNote-60)/12);
 
                 floatPosition=fmod(floatPosition,minlength);
-                if(DEBUG)std::cout<<"floatposition"<<floatPosition<<"\n\n"<<"minlength:"<<minlength<<"\n\n";
+               // if(DEBUG)std::cout<<"floatposition"<<floatPosition<<"\n\n"<<"minlength:"<<minlength<<"\n";
                 float mult=((float)velocity)/127.0f;
                 out[i]=waveform[(int)floatPosition]*Gain*envelope()*mult;
 
                 floatPosition+=positionIncrement;
                 envelopePosition+=1;
 
-                if(DEBUG)std::cout<<"addedropos"<<"\n\n";
             }
             //position+=1;
             //out[i]=sin(i/15)/;
 
         }
-                if(DEBUG)std::cout<<"finisedrunning"<<"\n\n";
+               // if(DEBUG)std::cout<<"finisedrunning"<<"\n\n";
         // while(position>2*M_PI){
         //     position-=2*M_PI;
         // }

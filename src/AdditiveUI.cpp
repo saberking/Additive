@@ -86,12 +86,18 @@ protected:
    /**
       ImGui specific onDisplay function.
     */
-    void stateChanged(const char* key, const char * value){
+    void stateChanged(const char* key, const char * value) override {
         if(strcmp(key, "ui_plugin_sample_filepath")==0){
             std::cout<<"loading from save "<<value<<"\n\n";
            strcpy(fInputFilePathName, value);
         }
     }
+
+    void uiIdle() override
+    {
+        repaint();
+    }
+
     void onImGuiDisplay() override
     {
         if(DEBUG)std::cout<<"GUIDISPLAY"<<"\n\n";
@@ -210,7 +216,6 @@ protected:
             }
         }
                 ImGui::End();
-
 
 
         
