@@ -16,3 +16,16 @@ _dpf_empty.c
 lv2_ttl_generator
 
 
+# KDevelop files
+*.kdev4
+.kdev4/
+Additive.kdev4
+
+*.kdevelop
+*.kdevelop.filelist
+*.kdevelop.pcs
+*.kdevses
+
+# Kate (editor used in KDevelop) swap files
+.*kate-swp
+.*.kate-swp
