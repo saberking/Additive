@@ -2,6 +2,7 @@
 /bin/
 /nonexistenfolder/
 /build/
+/winbuild/
 # cmake temp files that remain around
 CMakeFiles/
 cmake_install.cmake

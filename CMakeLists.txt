@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(NAME Additive)
 project(${NAME})
-
+# add_compile_definitions(BOOST_USE_WINDOWS_H)
+# add_compile_definitions(WIN32_LEAN_AND_MEAN)
 add_subdirectory(dpf)
 
 dpf_add_plugin(${NAME}

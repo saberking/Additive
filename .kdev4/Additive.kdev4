@@ -2,7 +2,7 @@
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00A\x00d\x00d\x00i\x00t\x00i\x00v\x00e)
 
 [CMake]
-Build Directory Count=1
+Build Directory Count=2
 Current Build Directory Index-Host System=0
 
 [CMake][CMake Build Directory 0]
@@ -10,8 +10,18 @@ Build Directory Path=/home/sk/data/files/saber/files/programming/Additive/build
 Build Type=Debug
 CMake Binary=/usr/bin/cmake
 CMake Executable=/usr/bin/cmake
+Environment Profile=default
+Extra Arguments=-DCMAKE_TOOLCHAIN_FILE=clang-toolchain.cmake
+Install Directory=/usr/local
+Runtime=Host System
+
+[CMake][CMake Build Directory 1]
+Build Directory Path=/home/sk/data/files/saber/files/programming/Additive/winbuild
+Build Type=
+CMake Binary=/usr/bin/cmake
+CMake Executable=/usr/bin/cmake
 Environment Profile=
-Extra Arguments=
+Extra Arguments=-DCMAKE_TOOLCHAIN_FILE=mingw-toolchain.cmake
 Install Directory=/usr/local
 Runtime=Host System
 
