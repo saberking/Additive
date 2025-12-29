@@ -1,3 +1,3 @@
 Alpha stage
 
-Based off DISTRHO DPF Imgui Sample Project
+Based off [[https://github.com/DISTRHO/imgui-template-plugin]]
