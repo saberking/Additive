@@ -13,8 +13,14 @@ project(${NAME})
 # add_compile_definitions(WIN32_LEAN_AND_MEAN)
 add_subdirectory(dpf)
 
+set(TARGETS_LIST "vst3")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND TARGETS_LIST "jack")
+endif()
+
 dpf_add_plugin(${NAME}
-  TARGETS vst3 jack
+  TARGETS ${TARGETS_LIST}
   FILES_DSP
       src/Additive.cpp
   FILES_UI
