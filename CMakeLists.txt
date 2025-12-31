@@ -28,11 +28,12 @@ file(GLOB_RECURSE COG_FILES
 
 # Define a stamp file that will be touched when Cog finishes
 set(COG_STAMP "${CMAKE_CURRENT_BINARY_DIR}/cog.stamp")
+set(PYTHON_EXECUTABLE python3)
 
 # Custom command that runs Cog and creates the stamp file
 add_custom_command(
     OUTPUT ${COG_STAMP}
-    COMMAND python -m cogapp -r ${COG_FILES}
+    COMMAND ${PYTHON_EXECUTABLE} -m cogapp -r ${COG_FILES}
     COMMAND ${CMAKE_COMMAND} -E touch ${COG_STAMP}  # Create/update stamp
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${COG_FILES} files_to_cog.txt               # Re-run if list or sources change
