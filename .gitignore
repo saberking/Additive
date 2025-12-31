@@ -3,6 +3,7 @@
 /nonexistenfolder/
 /build/
 /winbuild/
+/.qtcreator/
 # cmake temp files that remain around
 CMakeFiles/
 cmake_install.cmake
