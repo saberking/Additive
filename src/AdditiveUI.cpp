@@ -42,9 +42,7 @@ public:
         if (isResizable())
             fResizeHandle.hide();
 
-        for(int i =0;i<kParameterCount;i++){
-            params[i]=0.0f;
-        }
+
         dialogCount=0;
         fInputFilePathName[255]='\0';
         fOutputFilePathName[255]='\0';

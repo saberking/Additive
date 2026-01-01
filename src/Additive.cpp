@@ -28,7 +28,7 @@ enum MyFileTypes
 class Additive : public Plugin
 {
 public:
-    Additive() : Plugin ( kParameterCount, 0, 1 ), Gain ( 0.0f )
+    Additive() : Plugin ( kParameterCount, 0, 1 ), Gain ( 0.9f )
     {
         position=envelopePosition=floatPosition=0;
         waveformLength=sampleRate;
@@ -39,10 +39,10 @@ public:
         {
             waveform.push_back ( 0.0f );
         }
-        Octave=0;
+        Octave=3;
         PitchCoarse=0;
         PitchFine=0;
-        Volume24hz=0;
+        Volume24hz=1.0f;
         Volume25hz=0;
         Volume26hz=0;
         Volume27hz=0;
@@ -99,7 +99,7 @@ public:
         CsvArgumentIndex=0;
         Attack=0;
         Decay=0;
-        Sustain=0.0f;
+        Sustain=0.8f;
         Release=0;
         envelopeStage=2;
         calculate();
@@ -143,14 +143,14 @@ protected:
         {
         case kGain:
             parameter.symbol = "Gain";
-            parameter.ranges.def = 1.0f;
+            parameter.ranges.def = 0.9f;
             parameter.ranges.min = 0.0f;
             parameter.ranges.max = 2.0f;
             parameter.hints=kParameterIsAutomatable;
             break;
         case kVolume24hz:
             parameter.symbol = "Volume24hz";
-            parameter.ranges.def = 0.0f;
+            parameter.ranges.def = 1.0f;
             parameter.ranges.min = 0.0f;
             parameter.ranges.max = 2.0f;
             parameter.hints=kParameterIsAutomatable;
@@ -486,7 +486,7 @@ protected:
             break;
         case kOctave:
             parameter.symbol = "Octave";
-            parameter.ranges.def = 0;
+            parameter.ranges.def = 3;
             parameter.ranges.min = -10;
             parameter.ranges.max = 10;
             parameter.hints=kParameterIsAutomatable;

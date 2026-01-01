@@ -41,14 +41,12 @@ add_custom_command(
     VERBATIM
 )
 
-# Optional: make it part of the default build (ALL) so it always runs when building anything
-# Remove ALL if you want to trigger it manually sometimes
+# make it part of the default build (ALL) so it always runs when building anything
 add_custom_target(cog ALL DEPENDS ${COG_STAMP})
 
 # Add your real source files to the target
 target_sources(cog PRIVATE ${COG_FILES})
 
-# CRITICAL: Make the sources depend on the stamp file
 # This forces Cog to run before any of these files are compiled
 target_sources(cog PRIVATE ${COG_STAMP})
 
@@ -78,6 +76,11 @@ dpf_add_plugin(${NAME}
       src/AdditiveUI.cpp
       ImGuiFileDialog/ImGuiFileDialog.cpp
       dpf-widgets/opengl/DearImGui.cpp)
+
+target_sources(Additive
+  PRIVATE
+    src/parameters.txt
+)
 
 target_include_directories(${NAME} PUBLIC src)
 target_include_directories(${NAME} PUBLIC dpf-widgets/generic)
