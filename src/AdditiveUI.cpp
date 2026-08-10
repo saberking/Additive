@@ -47,6 +47,40 @@ public:
         fInputFilePathName[255]='\0';
         fOutputFilePathName[255]='\0';
     }
+    bool onKeyboard(const KeyboardEvent& ev)
+    {
+        // Check if a key was pressed down
+        if (ev.press)
+        {
+            bool ctrlPressed = (ev.mod & kModifierControl) != 0;
+
+            // Trap Ctrl + V (or character code 22 / 'v' / 'V')
+            if (ctrlPressed && (ev.key == 'v' || ev.key == 'V' || ev.key == 22))
+            {
+                // Get ImGui's IO configuration context
+                ImGuiIO& io = ImGui::GetIO();
+
+                // 1. Manually check if any ImGui InputText field currently wants text input
+                if (io.WantCaptureKeyboard)
+                {
+                    // Force ImGui to register the Paste command internally
+                    io.AddKeyEvent(ImGuiKey_ModCtrl, true);
+                    io.AddKeyEvent(ImGuiKey_V, true);
+
+                    // Release the keys for the next frame simulation loop
+                    io.AddKeyEvent(ImGuiKey_V, false);
+                    io.AddKeyEvent(ImGuiKey_ModCtrl, false);
+
+                    // 2. CRITICAL: Return true so DPF tells REAPER "This event was handled"
+                    return true;
+                }
+            }
+        }
+
+        // Allow all other keys (like Ctrl+A) to propagate to the ImGui context naturally
+        return UI::onKeyboard(ev);
+    }
+
 
 protected:
     // ----------------------------------------------------------------------------------------------------------------
