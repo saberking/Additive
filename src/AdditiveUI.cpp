@@ -44,8 +44,10 @@ public:
 
 
         dialogCount=0;
-        fInputFilePathName[255]='\0';
-        fOutputFilePathName[255]='\0';
+        int i;
+        for(i=0;i<sizeof(fInputFilePathName);i++){
+            fInputFilePathName[i]=fOutputFilePathName[i]='\0';
+        }
     }
     bool onKeyboard(const KeyboardEvent& ev)
     {
@@ -134,6 +136,22 @@ protected:
     {
         if(DEBUG)std::cout<<"GUIDISPLAY"<<"\n\n";
         float start, end;
+
+        // Check if the window is being opened/drawn for the first frame
+        ImGuiIO& io = ImGui::GetIO();
+
+        // The official workaround: if the user clicks inside the plugin window...
+        if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
+        {
+            // ...and they want to use an input box
+            if (io.WantCaptureKeyboard)
+            {
+                // Direct DPF widget call to aggressively snap focus to this view
+                this->getWindow().focus();
+            }
+        }
+
+
         const float width = getWidth();
         const float height = getHeight();
         const float margin = 20.0f * getScaleFactor();
